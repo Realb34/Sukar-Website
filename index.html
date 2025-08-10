@@ -143,22 +143,33 @@
     box-shadow:0 4px 10px rgba(0,0,0,.25);
     transform:translateY(-2px);
   }
-  /* Mobile collapse panel styling for readability over hero */
+
+  /* ===== Mobile full-screen menu (Change 2) ===== */
   @media (max-width: 767.98px){
     #navMenu.collapse.show,
     #navMenu.collapsing{
-      background:rgba(0,0,0,.6);
-      border-radius:12px;
-      padding:.5rem .75rem;
-      position:fixed;           /* CHANGED: fixed under global toggler (Change 3) */
-      top:56px;                 /* below fixed toggler */
-      left:auto;
-      right:8px;                /* align under top-right toggler */
-      width:max-content;
-      max-width:90%;
-      backdrop-filter:saturate(140%) blur(6px);
+      position:fixed;
+      inset:0;
+      width:100vw;
+      height:100vh;
+      background:rgba(0,0,0,.85);
+      backdrop-filter:blur(6px) saturate(120%);
+      display:flex !important;
+      align-items:center;
+      justify-content:center;
+      padding:2rem;
+      z-index:2000;
+      transition:opacity .3s ease, transform .3s ease;
     }
-    /* Space social icons to avoid overlapping the toggler */
+    #navMenu.collapsing{opacity:.01;transform:scale(.98);}
+    #navMenu.collapse.show{opacity:1;transform:scale(1);}
+    #navMenu .nav-list{
+      flex-direction:column;
+      gap:1.25rem;
+    }
+    /* prevent background scroll when open */
+    body.menu-open{overflow:hidden;}
+    /* Social icons offset so they don't sit under the toggler */
     .social-icons{left:60px !important;}
   }
 
@@ -231,15 +242,26 @@
   .section2-logo{max-width:140px; max-height:60px;} /* smaller logo cap */
 
   /* ============================================================
-     SECTION 3  (Change 4: parallax + reveal/disappear on scroll)
+     SECTION 3  (Change 4/6/7: parallax + reveal on scroll incl. mobile + slight blur)
      ============================================================ */
   #section3.custom-bg{
     position:relative;
-    background:url('https://food.fnr.sndimg.com/content/dam/images/food/fullset/2022/06/28/WU3109-ree-drummond-pancake-mix-dessert-crepes_4x3.jpg.rend.hgtvcom.616.462.85.suffix/1656434607859.webp') center / cover no-repeat;
-    background-attachment:fixed;                 /* simple parallax (desktop) */
-    background-position-y: var(--s3-parallax);   /* JS-driven offset */
+    /* background moved to ::after to allow blur */
+    background:none;
     overflow:hidden;
   }
+  /* Blurred background image layer (Change 7) */
+  #section3.custom-bg::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:url('https://food.fnr.sndimg.com/content/dam/images/food/fullset/2022/06/28/WU3109-ree-drummond-pancake-mix-dessert-crepes_4x3.jpg.rend.hgtvcom.616.462.85.suffix/1656434607859.webp') center / cover no-repeat;
+    background-position-y: var(--s3-parallax);
+    filter:blur(2px);
+    transform:scale(1.03); /* compensate blur edge crop */
+    z-index:0;
+  }
+  /* Dark veil above image, below content (Change 6 keeps effect on mobile) */
   #section3.custom-bg::before{
     content:"";
     position:absolute;
@@ -248,28 +270,45 @@
     opacity:var(--s3-veil);     /* JS adjusts this between enter/center/exit to "reveal" then "disappear" */
     transition:opacity .06s linear;
     pointer-events:none;
-    z-index:0;
+    z-index:1;
   }
-  .info-box{max-width:680px;background:rgba(0,0,0,.6);position:relative;z-index:1;}
+  .info-box{max-width:680px;background:rgba(0,0,0,.6);position:relative;z-index:2;}
   .info-box img{filter:brightness(70%);}
   .opacity-70{opacity:.7;}
 
-  /* Turn off heavy fixed backgrounds on mobile for performance */
+  /* No longer disable effect on mobile; keep attachment scroll for perf */
   @media (max-width: 767.98px){
-    #section3.custom-bg{background-attachment:scroll;}
+    /* nothing to disable here now */
   }
 
   /* ============================================================
-     SECTION 4
+     SECTION 4 (Change 8: center images in their quarters)
      ============================================================ */
   #section4 img{width:90px;}
+  #section4 .row > [class*="col-"]{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  }
 
   /* ============================================================
      SECTION 5
      ============================================================ */
   .filter-btn.active{background:#000;color:#fff;}
   .menu-item{display:none;}
-  .menu-item img{height:240px;object-fit:cover;}
+  /* Make menu imagery mobile-safe (Change 3) */
+  .menu-item .card{overflow:hidden;}
+  .menu-item img{
+    width:100%;
+    height:auto;
+    aspect-ratio:4/3;
+    object-fit:cover;
+  }
+  /* Let filter buttons wrap on small screens (Change 3) */
+  .btn-group{flex-wrap:wrap;gap:.5rem;}
+  .btn-group .btn{flex:0 0 auto;}
 
   /* ============================================================
      SECTION 6
@@ -281,7 +320,22 @@
     background-position: center;
     background-repeat: no-repeat;
   }
-  .media-split .left-media{background:url('https://img.cdn4dd.com/cdn-cgi/image/fit=cover,width=600,height=400,format=auto,quality=80/https://doordash-static.s3.amazonaws.com/media/store/header/03d87456-3562-452f-81cc-844d16f42e63.jpg') center/cover no-repeat;min-height:480px;}
+  /* Left media panel: use ::before for darkened + blurred bg (Change 4) */
+  .media-split .left-media{
+    position:relative;
+    min-height:480px;
+    overflow:hidden;
+  }
+  .media-split .left-media::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:url('https://img.cdn4dd.com/cdn-cgi/image/fit=cover,width=600,height=400,format=auto,quality=80/https://doordash-static.s3.amazonaws.com/media/store/header/03d87456-3562-452f-81cc-844d16f42e63.jpg') center/cover no-repeat;
+    filter:brightness(.75) blur(2px); /* slight darken + blur */
+    transform:scale(1.04);
+    z-index:0;
+  }
+  .media-split .left-media > *{position:relative;z-index:1;}
   .play-btn{width:80px;height:80px;font-size:1.75rem;}
   .stack{min-height:240px;}
   .stack-img{background-size:cover;background-position:center;}
@@ -294,12 +348,29 @@
   .provider-icons a:hover img{transform:scale(1.05);opacity:1;}
 
   /* ============================================================
-     SECTION 8
+     SECTION 8 (Change 5: smaller centered quotes with inline arrows)
      ============================================================ */
   #testiCarousel .carousel-item{min-height:200px;}
   #testiCarousel blockquote{max-width:720px;margin:auto;}
   /* NEW: ensure 5-star image is centered (Change 1) */
   .stars-centered{display:block;margin-left:auto;margin-right:auto;}
+  /* Smaller quotes */
+  #testiCarousel .blockquote p{font-size:1rem;} /* smaller than fs-4 */
+  /* Place arrows on the same line as quotes using CSS grid */
+  #testiCarousel{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:1rem;
+  }
+  #testiCarousel .carousel-inner{grid-column:2;}
+  #testiCarousel .carousel-control-prev.custom-arrow,
+  #testiCarousel .carousel-control-next.custom-arrow{
+    position:static;
+    width:36px;height:36px;
+  }
+  #testiCarousel .carousel-control-prev.custom-arrow{grid-column:1;justify-self:end;}
+  #testiCarousel .carousel-control-next.custom-arrow{grid-column:3;justify-self:start;}
 
   /* ============================================================
      SECTION 9
@@ -374,17 +445,16 @@
   /* Section 2 logo centering */
   .section2-logo{display:block;margin-left:auto;margin-right:auto;}
 
-  /* Section 5 menu items smaller */
-  .menu-item img{height:200px;}
+  /* Section 5 menu items smaller (kept but height now controlled by aspect-ratio) */
   .menu-item .card-title{font-size:1rem;}
   .menu-item .card-text{font-size:.9rem;}
 
   /* Section 6 play button centering */
   .play-btn{margin-left:auto;margin-right:auto;}
 
-  /* Section 8 arrow positions */
-  #testiCarousel .carousel-control-prev.custom-arrow{left:-2rem;}
-  #testiCarousel .carousel-control-next.custom-arrow{right:-2rem;}
+  /* Section 8 arrow positions (overridden by grid for inline layout) */
+  #testiCarousel .carousel-control-prev.custom-arrow{left:auto;}
+  #testiCarousel .carousel-control-next.custom-arrow{right:auto;}
 
   /* Footer spacing */
   footer{padding-bottom:3rem;}
@@ -425,15 +495,12 @@
     .custom-arrow{width:48px;height:48px;}
     .custom-arrow.small-arrow{width:38px;height:38px;}
     .info-box{padding:1.5rem !important;}
-    #testiCarousel .carousel-control-prev.custom-arrow{left:-1rem;}
-    #testiCarousel .carousel-control-next.custom-arrow{right:-1rem;}
   }
   @media (max-width: 576px){
     #hero{height:85vh;}
     .follow-label{display:none;} /* save space on very small screens */
     .hero-nav .nav-list{gap:.5rem;}
     .hero-nav .nav-list a{padding:.3rem .7rem;}
-    .menu-item img{height:180px;}
   }
   @media (prefers-reduced-motion: reduce){
     html:focus-within{scroll-behavior:auto;}
@@ -445,7 +512,7 @@
     position:fixed;
     top:8px;
     right:8px;
-    z-index:2000;              /* above everything */
+    z-index:2001;              /* above full-screen menu */
   }
   /* Ensure only visible on mobile, like original intent */
   @media (min-width: 768px){
@@ -574,10 +641,10 @@
 <section id="section4" class="pistachio py-5">
   <div class="container">
     <div class="row g-4 text-center">
-      <div class="col-6 col-md-3"><img src="assets/icon1.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"><p>These will</p></div>
-      <div class="col-6 col-md-3"><img src="assets/icon2.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"><p>be images of</p></div>
-      <div class="col-6 col-md-3"><img src="assets/icon3.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"><p>feature item</p></div>
-      <div class="col-6 col-md-3"><img src="assets/icon4.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"><p>logos (I can give an example)</p></div>
+      <div class="col-6 col-md-3"><img src="https://i.imgur.com/0wIDKMB.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"></div>
+      <div class="col-6 col-md-3"><img src="https://i.imgur.com/x4RIizz.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"><p>be images of</p></div>
+      <div class="col-6 col-md-3"><img src="https://i.imgur.com/R0F3Dx5.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"><p>feature item</p></div>
+      <div class="col-6 col-md-3"><img src="https://i.imgur.com/SaDJb3I.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"><p>logos (I can give an example)</p></div>
     </div>
   </div>
 </section>
@@ -597,10 +664,10 @@
     </div>
 
     <div class="row g-4" id="menuContainer">
-      <div class="col-md-6"><div class="menu-item appetizer card h-100"><img src="https://thekellykathleen.com/wp-content/uploads/2021/02/Chocolate-Tahini-White-Choco-Covered-Banana-Bites-300x300.jpg" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">White chocolate banana crepe nuggets</h5><p class="card-text small">A thin and crispy crepe wrapped around bananas cut into nugget size bites dipped in white chocolate.</p></div></div></div>
-      <div class="col-md-6"><div class="menu-item mains card h-100"><img src="https://www.shutterstock.com/image-photo/chocolate-fountain-fruits-white-on-260nw-1119929936.jpg" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">White chocolate dip</h5><p class="card-text small">Dip any of our classic menu items with any flavor chocalate requiested.</p></div></div></div>
-      <div class="col-md-6"><div class="menu-item dessert card h-100"><img src="https://res.cloudinary.com/hz3gmuqw6/image/upload/c_fill,q_auto,w_750,f_auto/f_auto/7-Brew-Secret-Menu-20-phpF8sf6S" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">Beachy Peachy</h5><p class="card-text small">fruit punch falvored energy drink.</p></div></div></div>
-      <div class="col-md-6"><div class="menu-item drinks card h-100"><img src="https://lifemadesweeter.com/wp-content/uploads/Easy-Cold-Brew-Coffee-Recipe-Vegan-Dairy-Free-Paleo-Healthy.jpg" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">Cold Brew Coffee</h5><p class="card-text small">Smooth 18-hour cold brew served over ice.</p></div></div></div>
+      <div class="col-12 col-md-6"><div class="menu-item appetizer card h-100"><img src="https://thekellykathleen.com/wp-content/uploads/2021/02/Chocolate-Tahini-White-Choco-Covered-Banana-Bites-300x300.jpg" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">White chocolate banana crepe nuggets</h5><p class="card-text small">A thin and crispy crepe wrapped around bananas cut into nugget size bites dipped in white chocolate.</p></div></div></div>
+      <div class="col-12 col-md-6"><div class="menu-item mains card h-100"><img src="https://www.shutterstock.com/image-photo/chocolate-fountain-fruits-white-on-260nw-1119929936.jpg" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">White chocolate dip</h5><p class="card-text small">Dip any of our classic menu items with any flavor chocalate requiested.</p></div></div></div>
+      <div class="col-12 col-md-6"><div class="menu-item dessert card h-100"><img src="https://res.cloudinary.com/hz3gmuqw6/image/upload/c_fill,q_auto,w_750,f_auto/f_auto/7-Brew-Secret-Menu-20-phpF8sf6S" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">Beachy Peachy</h5><p class="card-text small">fruit punch falvored energy drink.</p></div></div></div>
+      <div class="col-12 col-md-6"><div class="menu-item drinks card h-100"><img src="https://lifemadesweeter.com/wp-content/uploads/Easy-Cold-Brew-Coffee-Recipe-Vegan-Dairy-Free-Paleo-Healthy.jpg" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">Cold Brew Coffee</h5><p class="card-text small">Smooth 18-hour cold brew served over ice.</p></div></div></div>
     </div>
   </div>
 </section>
@@ -672,9 +739,9 @@
     </div>
     <div id="testiCarousel" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner text-center">
-        <div class="carousel-item active"><blockquote class="blockquote text-white"><p class="fs-4">“Absolutely the best dining experience I've had in years!”</p></blockquote></div>
-        <div class="carousel-item"><blockquote class="blockquote text-white"><p class="fs-4">“Service was impeccable and the food was divine.”</p></blockquote></div>
-        <div class="carousel-item"><blockquote class="blockquote text-white"><p class="fs-4">“I'll be recommending this place to all my friends!”</p></blockquote></div>
+        <div class="carousel-item active"><blockquote class="blockquote text-white"><p>“Absolutely the best dining experience I've had in years!”</p></blockquote></div>
+        <div class="carousel-item"><blockquote class="blockquote text-white"><p>“Service was impeccable and the food was divine.”</p></blockquote></div>
+        <div class="carousel-item"><blockquote class="blockquote text-white"><p>“I'll be recommending this place to all my friends!”</p></blockquote></div>
       </div>
 
       <button class="carousel-control-prev custom-arrow small-arrow" type="button" data-bs-target="#testiCarousel" data-bs-slide="prev">
@@ -752,11 +819,11 @@
 })();
 
 /* ============================================================
-   SECTION 3 · PARALLAX + REVEAL/DISAPPEAR ON SCROLL (Change 4)
+   SECTION 3 · PARALLAX + REVEAL/DISAPPEAR ON SCROLL
+   - Now active on both desktop and mobile (Change 6).
    - Moves the background as the user scrolls (parallax).
    - Fades the dark veil to "reveal" near section center, then
    - increases veil again as it exits (disappear).
-   - Optimized: disabled on small screens for smoother mobile perf.
    ============================================================ */
 (() => {
   const section = document.getElementById('section3');
@@ -781,32 +848,13 @@
     document.documentElement.style.setProperty('--s3-veil', veil.toFixed(3));
   };
 
-  const mql = window.matchMedia('(min-width: 768px)');
-  let active = false;
-  const enable = () => {
-    if (active) return;
-    window.addEventListener('scroll', onScroll, {passive:true});
-    window.addEventListener('load', onScroll, {once:true});
-    window.addEventListener('resize', onScroll);
-    active = true;
-  };
-  const disable = () => {
-    if (!active) return;
-    window.removeEventListener('scroll', onScroll);
-    window.removeEventListener('resize', onScroll);
-    active = false;
-    /* Reset to a sane default when disabled */
-    document.documentElement.style.setProperty('--s3-parallax', '0px');
-    document.documentElement.style.setProperty('--s3-veil', '0.55');
-  };
-
-  const review = () => (mql.matches ? enable() : disable());
-  mql.addEventListener ? mql.addEventListener('change', review) : mql.addListener(review);
-  review();
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('load', onScroll, {once:true});
+  window.addEventListener('resize', onScroll);
 })();
 
 /* ============================================================
-   SECTION 5 · MENU FILTERING
+   SECTION 5 · MENU FILTERING  (Change 3: keep mobile safe)
    ============================================================ */
 (() => {
   const buttons = document.querySelectorAll('.filter-btn');
@@ -814,7 +862,7 @@
 
   const display = filter => {
     items.forEach(item => {
-      item.style.display = filter === 'all' || item.classList.contains(filter) ? 'block' : 'none';
+      item.style.display = (filter === 'all' || item.classList.contains(filter)) ? 'block' : 'none';
     });
   };
 
@@ -823,7 +871,7 @@
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
       buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active'));
+      btn.classList.add('active');
       display(btn.dataset.filter);
     }, {passive:true});
   });
@@ -841,6 +889,41 @@
 
   modal.addEventListener('show.bs.modal', () => { iframe.src = url; }, {once:false});
   modal.addEventListener('hidden.bs.modal', () => { iframe.src = ''; });
+})();
+
+/* ============================================================
+   NAV · Close menu on link click + body lock (Changes 1 & 2)
+   - When user taps a nav item, collapse the mobile menu.
+   - When the menu is open, prevent background scrolling.
+   ============================================================ */
+(() => {
+  const menu   = document.getElementById('navMenu');
+  if(!menu) return;
+
+  const navLinks = menu.querySelectorAll('.nav-link');
+  const toggler  = document.querySelector('.global-navbar-toggler');
+
+  const bsCollapse = () => bootstrap.Collapse.getOrCreateInstance(menu, {toggle:false});
+
+  // Close on link click
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (menu.classList.contains('show')) {
+        bsCollapse().hide();
+      }
+    });
+  });
+
+  // Body locking when open/closed
+  menu.addEventListener('show.bs.collapse', () => document.body.classList.add('menu-open'));
+  menu.addEventListener('hidden.bs.collapse', () => document.body.classList.remove('menu-open'));
+
+  // Also close if user taps the toggler while open (optional safety)
+  if (toggler) {
+    toggler.addEventListener('click', () => {
+      // Bootstrap handles toggle; body lock handled by events above
+    });
+  }
 })();
 </script>
 </body>
