@@ -184,6 +184,29 @@
     animation:fadeSlideDown .6s ease-out both;
     width: min(90vw, 1000px);
   }
+  /* Stronger, lighter-looking text with subtle glow */
+  #heroCarousel .carousel-caption h1{
+    color:#fff;
+    text-shadow:0 2px 10px rgba(0,0,0,.55), 0 0 18px rgba(255,255,255,.25);
+  }
+  #heroCarousel .carousel-caption h4{
+    color:#f8f9fa;
+    text-shadow:0 1px 8px rgba(0,0,0,.5), 0 0 12px rgba(255,255,255,.2);
+  }
+  /* Lighter CTA with hover animation */
+  .hero-cta.btn{
+    background:rgba(255,255,255,.92);
+    color:#000;
+    border-color:rgba(255,255,255,.95);
+    box-shadow:0 6px 18px rgba(0,0,0,.25), 0 0 0 0 rgba(255,255,255,.6);
+    transition:transform .25s ease, box-shadow .25s ease, background-color .25s ease, color .25s ease;
+  }
+  .hero-cta.btn:hover{
+    background:#fff;
+    color:#000;
+    transform:translateY(-2px) scale(1.05);
+    box-shadow:0 10px 26px rgba(0,0,0,.3), 0 0 0 6px rgba(255,255,255,.25);
+  }
 
   /* ===== Social icons & "Follow us!" label (Change 2) ===== */
   .social-icons{z-index:20;}    /* keep above overlay */
@@ -319,19 +342,31 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    position:relative; /* to host darkening overlay */
+  }
+  /* === NEW: Slightly darker overall backdrop for Section 6 === */
+  #section6::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.12);
+    pointer-events:none;
+    z-index:0;
   }
   /* Left media panel: use ::before for darkened + blurred bg (Change 4) */
   .media-split .left-media{
     position:relative;
     min-height:480px;
     overflow:hidden;
+    z-index:1; /* above section overlay */
   }
   .media-split .left-media::before{
     content:"";
     position:absolute;
     inset:0;
     background:url('https://img.cdn4dd.com/cdn-cgi/image/fit=cover,width=600,height=400,format=auto,quality=80/https://doordash-static.s3.amazonaws.com/media/store/header/03d87456-3562-452f-81cc-844d16f42e63.jpg') center/cover no-repeat;
-    filter:brightness(.75) blur(2px); /* slight darken + blur */
+    /* === NEW: slightly more dark than before === */
+    filter:brightness(.6) blur(2px); /* darken + blur */
     transform:scale(1.04);
     z-index:0;
   }
@@ -340,6 +375,40 @@
   .stack{min-height:240px;}
   .stack-img{background-size:cover;background-position:center;}
   .stack-text h4{margin:0;}
+
+  /* === NEW: More striking title + play button in Section 6 === */
+  .media-split .left-media h3{
+    color:#fff;
+    font-weight:800;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+    text-shadow:0 2px 12px rgba(0,0,0,.6), 0 0 22px rgba(255,255,255,.25);
+    filter:drop-shadow(0 0 6px rgba(0,0,0,.35));
+  }
+  @media (min-width: 768px){
+    .media-split .left-media h3{font-size:2rem;}
+  }
+  .play-btn{
+    width:96px;                /* bigger, more prominent */
+    height:96px;
+    font-size:2rem;
+    border-radius:999px;
+    background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(245,245,245,.98));
+    color:#111 !important;
+    border:1px solid rgba(255,255,255,.9);
+    box-shadow:0 12px 28px rgba(0,0,0,.35), 0 0 0 0 rgba(255,255,255,.35);
+    animation:playPulse 2.4s infinite ease-in-out;
+    transition:transform .25s ease, box-shadow .25s ease, background-color .25s ease;
+  }
+  .play-btn:hover{
+    transform:translateY(-2px) scale(1.06);
+    box-shadow:0 16px 34px rgba(0,0,0,.4), 0 0 0 10px rgba(255,255,255,.2);
+  }
+  @keyframes playPulse{
+    0%{box-shadow:0 12px 28px rgba(0,0,0,.35), 0 0 0 0 rgba(255,255,255,.28);}
+    70%{box-shadow:0 12px 28px rgba(0,0,0,.35), 0 0 0 18px rgba(255,255,255,0);}
+    100%{box-shadow:0 12px 28px rgba(0,0,0,.35), 0 0 0 0 rgba(255,255,255,0);}
+  }
 
   /* ============================================================
      SECTION 7 (provider icons)
@@ -400,8 +469,20 @@
     z-index:10; /* above overlay */
     padding:0;
     color:#fff; /* pointer color */
+    /* === NEW: make arrow key itself lighter and add hover animation === */
+    background-color:rgba(255,255,255,.12) !important;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:999px;
+    backdrop-filter:blur(4px) saturate(120%);
+    box-shadow:0 6px 18px rgba(0,0,0,.25), inset 0 0 0 0 rgba(255,255,255,.35);
+    transition:transform .25s ease, box-shadow .25s ease, background-color .25s ease;
   }
   .custom-arrow.small-arrow{width:44px;height:44px;}
+  .custom-arrow:hover{
+    background-color:rgba(255,255,255,.28) !important;
+    transform:translateY(-50%) translateY(-2px) scale(1.06);
+    box-shadow:0 12px 26px rgba(0,0,0,.3), inset 0 0 0 6px rgba(255,255,255,.18);
+  }
   .custom-arrow .carousel-control-prev-icon,
   .custom-arrow .carousel-control-next-icon{display:none !important;}
 
@@ -533,7 +614,8 @@
     background-repeat:no-repeat;
     background-size:contain;
     background-image:url('https://i.imgur.com/520xzls.png') !important;
-    filter:drop-shadow(0 0 6px rgba(0,0,0,.8)); /* keep glow; no invert for raster icon */
+    /* brighter, easier to see */
+    filter:drop-shadow(0 0 10px rgba(255,255,255,.6)) drop-shadow(0 0 6px rgba(0,0,0,.6));
   }
   /* Directional rotation: left = -90°, right = +90° */
   .carousel-control-prev.custom-arrow .carousel-control-prev-icon{transform:rotate(90deg);}
@@ -591,7 +673,7 @@
         <div class="carousel-caption text-center">
           <h1 class="display-4 fw-bold text-shadow">First Slide Product Title</h1>
           <h4 class="lead mb-3 text-shadow">First Slide Subtitle</h4>
-          <a href="#section5" class="btn btn-outline-light rounded-pill px-4">View Menu</a>
+          <a href="#section5" class="btn btn-light hero-cta rounded-pill px-4">View Menu</a>
         </div>
       </div>
       <div class="carousel-item">
@@ -599,7 +681,7 @@
         <div class="carousel-caption text-center">
           <h1 class="display-4 fw-bold text-shadow">Second Slide Product Title</h1>
           <h4 class="lead mb-3 text-shadow">Second Slide Subtitle</h4>
-          <a href="#section5" class="btn btn-outline-light rounded-pill px-4">View Menu</a>
+          <a href="#section5" class="btn btn-light hero-cta rounded-pill px-4">View Menu</a>
         </div>
       </div>
       <div class="carousel-item">
@@ -607,7 +689,7 @@
         <div class="carousel-caption text-center">
           <h1 class="display-4 fw-bold text-shadow">Third Slide Product Title</h1>
           <h4 class="lead mb-3 text-shadow">Third Slide Subtitle</h4>
-          <a href="#section5" class="btn btn-outline-light rounded-pill px-4">View Menu</a>
+          <a href="#section5" class="btn btn-light hero-cta rounded-pill px-4">View Menu</a>
         </div>
       </div>
     </div>
