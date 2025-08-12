@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sukar — Order</title>
+
+  <!-- Resource Hints for Mobile Performance -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Bootstrap & Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <!-- ===== FULL CSS (inherits the same look & feel) ===== -->
+  <style>
+  /* ============================================================
+     GLOBAL PALETTE & RESETS (copied to match Home theme)
+     ============================================================ */
+  :root{
+    --pistachio:#362417;
+    --offwhite:#f9f9f9;
+    --darkbg:#333;
+    --top-space: 180px; /* space used by logo+nav */
+    --s3-veil: .55;
+    --s3-parallax: 0px;
+    --s6-bg: url('https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1600&auto=format&fit=crop');
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;scroll-behavior:smooth}
+  img{max-width:100%;height:auto;display:block}
+  .text-shadow{text-shadow:0 2px 6px rgba(0,0,0,.6)}
+  .pistachio{background:var(--pistachio); color:#fff}
+  .pistachio *{color:#fff}
+  .offwhite{background:var(--offwhite)}
+  .dark-bg{background:var(--darkbg)}
+
+  /* Sukar logo utilities */
+  .sukar-logo{display:inline-block;vertical-align:middle}
+  .logo-crop{--trim-t:0px;--trim-r:0px;--trim-b:0px;--trim-l:0px;clip-path:inset(var(--trim-t) var(--trim-r) var(--trim-b) var(--trim-l));margin-top:calc(-1*var(--trim-t));margin-right:calc(-1*var(--trim-r));margin-bottom:calc(-1*var(--trim-b));margin-left:calc(-1*var(--trim-l))}
+
+  /* ===== HERO (kept identical) ===== */
+  #hero{position:relative;height:65vh;color:#fff;overflow:hidden}
+  #hero::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:5;pointer-events:none}
+  #heroCarousel{position:absolute;inset:0;height:100%;z-index:1}
+  #heroCarousel .carousel-inner,#heroCarousel .carousel-item{height:100%}
+  #heroCarousel .hero-slide-img{height:100%;width:100%;object-fit:cover}
+  .hero-logo{width:120px;display:block;margin:2px auto 10px auto;z-index:10;position:relative}
+
+  #mainNav{position:relative;z-index:10}
+  .hero-nav{background:transparent;color:#fff}
+  .hero-nav.navbar.navbar-dark .navbar-toggler{border:0}
+  .hero-nav.navbar.navbar-dark .navbar-toggler:focus{box-shadow:none}
+  .hero-nav .nav-list{list-style:none;margin:0;padding:.5rem 0;display:flex;justify-content:center;align-items:center;gap:1rem;flex-wrap:wrap}
+  .hero-nav .nav-list a{color:#fff;font-weight:700;text-decoration:none;padding:.35rem .85rem;display:inline-block;border:none;border-radius:999px;transition:transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease}
+  .hero-nav .nav-list a:hover{background-color:rgba(255,255,255,.08);box-shadow:0 4px 10px rgba(0,0,0,.25);transform:translateY(-2px)}
+
+  @media (max-width: 767.98px){
+    #navMenu.collapse.show,#navMenu.collapsing{position:fixed;inset:0;width:100vw;height:100vh;background:rgba(0,0,0,.85);backdrop-filter:blur(6px) saturate(120%);display:flex !important;align-items:center;justify-content:center;padding:2rem;z-index:2000;transition:opacity .3s ease, transform .3s ease}
+    #navMenu.collapsing{opacity:.01;transform:scale(.98)}
+    #navMenu.collapse.show{opacity:1;transform:scale(1)}
+    #navMenu .nav-list{flex-direction:column;gap:1.25rem}
+    body.menu-open{overflow:hidden}
+    .social-icons{left:60px !important}
+  }
+
+  #heroCarousel .carousel-caption{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);bottom:auto;z-index:10;animation:fadeSlideDown .6s ease-out both;width:min(90vw,1000px)}
+
+  .social-icons{z-index:20}
+  .social-icons a{opacity:.85;transition:opacity .2s}
+  .social-icons a:hover{opacity:1}
+  .follow-label{color:#fff;font-weight:300;font-size:.9rem;letter-spacing:.02em;display:flex;align-items:center;gap:.5rem;white-space:nowrap}
+  .follow-label .thin-arrow{position:relative;display:inline-block;width:24px;height:1px;background-color:#fff;opacity:.9}
+  .follow-label .thin-arrow::after{content:"";position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-left:6px solid #fff;border-top:4px solid transparent;border-bottom:4px solid transparent}
+
+  .carousel-control-prev,.carousel-control-next{width:60px;height:60px;top:50%;transform:translateY(-50%);opacity:1!important;background:transparent;border-radius:50%;transition:background .3s}
+  .carousel-control-prev:hover,.carousel-control-next:hover{background:transparent}
+  .carousel-control-prev-icon,.carousel-control-next-icon{width:100%;height:100%;background-size:100% 100%;filter:invert(1) drop-shadow(0 0 6px rgba(0,0,0,.8))}
+  .carousel-control-prev:focus,.carousel-control-next:focus{box-shadow:none;outline:none}
+
+  .section2-thin{padding-top:.75rem!important;padding-bottom:.75rem!important}
+  .section2-logo{max-width:140px;max-height:60px}
+
+  /* Social positioning overrides */
+  .social-icons{top:20px !important;left:20px !important;flex-direction:row !important}
+
+  /* Custom image-based crepe arrows */
+  .custom-arrow{position:absolute;width:56px;height:56px;top:50%;transform:translateY(-50%);background:transparent!important;border:none;opacity:1;z-index:10;padding:0;color:#fff}
+  .custom-arrow.small-arrow{width:44px;height:44px}
+  .custom-arrow .arrow-graphic{display:none!important}
+  .custom-arrow .carousel-control-prev-icon,.custom-arrow .carousel-control-next-icon{display:block!important;background-position:center;background-repeat:no-repeat;background-size:contain;background-image:url('https://i.imgur.com/520xzls.png')!important;filter:drop-shadow(0 0 6px rgba(0,0,0,.8))}
+  .carousel-control-prev.custom-arrow .carousel-control-prev-icon{transform:rotate(90deg)}
+  .carousel-control-next.custom-arrow .carousel-control-next-icon{transform:rotate(-90deg)}
+  #hero .carousel-control-prev.custom-arrow{left:1rem}
+  #hero .carousel-control-next.custom-arrow{right:1rem}
+
+  @keyframes fadeSlideDown{0%{opacity:0;transform:translate(-50%,calc(-50% - 30px))}100%{opacity:1;transform:translate(-50%,-50%)}}
+  @media (max-width: 992px){#hero{height:60vh}}
+  @media (max-width: 768px){.hero-logo{width:100px}.custom-arrow{width:48px;height:48px}.custom-arrow.small-arrow{width:38px;height:38px}}
+  @media (max-width: 576px){#hero{height:55vh}.follow-label{display:none}.hero-nav .nav-list{gap:.5rem}.hero-nav .nav-list a{padding:.3rem .7rem}}
+  @media (prefers-reduced-motion: reduce){html:focus-within{scroll-behavior:auto}.btn,.nav-link,.filter-btn,.card,.custom-arrow,.stack,.social-icons a{transition:none!important}}
+
+  .global-navbar-toggler{position:fixed;top:8px;right:8px;z-index:2001}
+  @media (min-width:768px){.global-navbar-toggler{display:none}}
+
+  /* ===== ORDER PAGE SPECIFIC STYLES ===== */
+  .order-toolbar{position:sticky;top:0;z-index:50;background:var(--offwhite);border-bottom:1px solid rgba(0,0,0,.08)}
+  .order-card img{aspect-ratio:4/3;object-fit:cover}
+  .qty-stepper{display:inline-flex;align-items:center;border:1px solid rgba(0,0,0,.15);border-radius:999px;overflow:hidden}
+  .qty-stepper button{width:36px;height:36px;border:0;background:#fff}
+  .qty-stepper input{width:44px;height:36px;border:0;text-align:center}
+  .sticky-cart-cta{position:sticky;bottom:0;z-index:60}
+  .category-chip{border-radius:999px}
+  .price{font-weight:700}
+  .badge-cart{position:relative}
+  .badge-cart .count{position:absolute;top:-6px;right:-6px}
+  .modifier-pill{border:1px solid rgba(0,0,0,.15);border-radius:999px;padding:.35rem .75rem;cursor:pointer}
+  .modifier-pill input{display:none}
+  .modifier-pill.active{background:#000;color:#fff;border-color:#000}
+  .cart-line{border-bottom:1px dashed rgba(0,0,0,.1)}
+  .cart-line:last-child{border-bottom:0}
+  .min-w-0{min-width:0}
+
+  /* Footer (copied) */
+  .footer-logo{max-width:120px}
+  footer a{text-decoration:none}
+  footer a:hover{text-decoration:underline}
+  footer{padding-bottom:3rem}
+
+  /* ===== FIX: ensure mobile nav overlay is never blocked by toolbar/CTA ===== */
+  @media (max-width: 767.98px){
+    body.menu-open .order-toolbar,
+    body.menu-open .sticky-cart-cta{
+      display:none !important;   /* hide while menu is open */
+    }
+    /* keep overlay decisively on top */
+    #navMenu.collapse.show{ z-index: 4000; }
+  }
+  </style>
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="70">
+  <!-- ===== GLOBAL MOBILE TOGGLER (same as Home) ===== -->
+  <button class="navbar-toggler global-navbar-toggler navbar-dark d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <!-- ===== SECTION 1 · HERO (identical structure & socials/nav) ===== -->
+  <header id="hero">
+    <div class="social-icons d-flex flex-row gap-3 position-absolute top-0 start-0 p-3">
+      <span class="follow-label">Follow us!<span class="thin-arrow" aria-hidden="true"></span></span>
+      <a href="#" class="text-white"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i><span class="visually-hidden">Facebook</span></a>
+      <a href="#" class="text-white"><i class="fab fa-instagram fa-lg" aria-hidden="true"></i><span class="visually-hidden">Instagram</span></a>
+      <a href="#" class="text-white"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+    </div>
+
+    <a href="#hero">
+      <img src="https://i.imgur.com/P6DecMX.png" class="hero-logo sukar-logo logo-crop" style="--trim-t:22px;" alt="Sukar Logo" decoding="async" fetchpriority="high">
+    </a>
+
+    <nav id="mainNav" class="hero-nav navbar navbar-expand-md navbar-dark">
+      <div class="container justify-content-center position-relative">
+        <div class="collapse navbar-collapse justify-content-center" id="navMenu">
+          <ul class="nav-list navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="index.html#section1">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#order">Order</a></li>
+            <li class="nav-item"><a class="nav-link" href="location.html">Location</a></li>
+            <li class="nav-item"><a class="nav-link" href="#footer">Contact</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.html#section8">Reviews</a></li>
+            <li class="nav-item"><a class="nav-link" href="career.html">Career</a></li>
+            <li class="nav-item"><a class="nav-link" href="franchise.html">Franchise</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="https://images.unsplash.com/photo-1546793665-c74683f339c1?q=80&w=1600&auto=format&fit=crop" class="d-block w-100 hero-slide-img" alt="Fresh crepe slide" decoding="async" fetchpriority="high">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== ORDER TOOLBAR ===== -->
+  <div class="order-toolbar py-3" id="order">
+    <div class="container d-flex flex-wrap align-items-center gap-2 gap-md-3">
+      <div class="d-flex align-items-center gap-2 me-auto min-w-0" role="search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="searchInput" class="form-control form-control-sm" type="search" placeholder="Search menu…" aria-label="Search menu" />
+      </div>
+      <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-outline-dark btn-sm category-chip active" data-filter="all">Featured</button>
+        <button class="btn btn-outline-dark btn-sm category-chip" data-filter="crepes">Crepes</button>
+        <button class="btn btn-outline-dark btn-sm category-chip" data-filter="chocolate">Chocolate</button>
+        <button class="btn btn-outline-dark btn-sm category-chip" data-filter="energy">Lotus Energy</button>
+        <button class="btn btn-outline-dark btn-sm category-chip" data-filter="coffee">Coffee</button>
+      </div>
+      <button class="btn btn-dark btn-sm ms-auto badge-cart" type="button" data-bs-toggle="offcanvas" data-bs-target="#cart" aria-controls="cart" aria-label="Open cart">
+        <i class="fa-solid fa-bag-shopping me-1"></i> Cart
+        <span class="badge bg-danger rounded-pill count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== MENU GRID ===== -->
+  <section class="offwhite py-4 py-md-5">
+    <div class="container">
+      <div class="row g-4" id="menuGrid" aria-live="polite">
+        <!-- Placeholder menu items (IDs used for cart) -->
+        <!-- Crepes -->
+        <div class="col-12 col-sm-6 col-lg-4 menu-item" data-cat="crepes" data-name="White Chocolate Banana Crepe Nuggets" data-price="8.50" data-id="itm001">
+          <div class="card h-100 order-card">
+            <img src="https://thekellykathleen.com/wp-content/uploads/2021/02/Chocolate-Tahini-White-Choco-Covered-Banana-Bites-300x300.jpg" class="card-img-top" alt="White chocolate banana crepe nuggets">
+            <div class="card-body d-flex flex-column">
+              <h6 class="fw-bold mb-1">White Chocolate Banana Crepe Nuggets</h6>
+              <p class="text-muted small mb-2">Thin crepe wrapped around banana nuggets, dipped in white chocolate.</p>
+              <div class="mt-auto d-flex justify-content-between align-items-center">
+                <span class="price">$8.50</span>
+                <button class="btn btn-sm btn-dark add-btn" data-mods="chocolate,white,milk,dark;extras,strawberries,bananas,nutella">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 menu-item" data-cat="chocolate" data-name="White Chocolate Dip" data-price="3.00" data-id="itm002">
+          <div class="card h-100 order-card">
+            <img src="https://www.shutterstock.com/image-photo/chocolate-fountain-fruits-white-on-260nw-1119929936.jpg" class="card-img-top" alt="White chocolate dip">
+            <div class="card-body d-flex flex-column">
+              <h6 class="fw-bold mb-1">White Chocolate Dip</h6>
+              <p class="text-muted small mb-2">Add a side of your favorite chocolate dip to any item.</p>
+              <div class="mt-auto d-flex justify-content-between align-items-center">
+                <span class="price">$3.00</span>
+                <button class="btn btn-sm btn-dark add-btn" data-mods="chocolate,white,milk,dark">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 menu-item" data-cat="energy" data-name="Beachy Peachy" data-price="4.75" data-id="itm003">
+          <div class="card h-100 order-card">
+            <img src="https://res.cloudinary.com/hz3gmuqw6/image/upload/c_fill,q_auto,w_750,f_auto/f_auto/7-Brew-Secret-Menu-20-phpF8sf6S" class="card-img-top" alt="Beachy Peachy Lotus energy drink">
+            <div class="card-body d-flex flex-column">
+              <h6 class="fw-bold mb-1">Beachy Peachy</h6>
+              <p class="text-muted small mb-2">Fruit punch–forward Lotus energy blend with peach notes.</p>
+              <div class="mt-auto d-flex justify-content-between align-items-center">
+                <span class="price">$4.75</span>
+                <button class="btn btn-sm btn-dark add-btn" data-mods="size,Small,Medium,Large">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 menu-item" data-cat="coffee" data-name="Cold Brew Coffee" data-price="3.95" data-id="itm004">
+          <div class="card h-100 order-card">
+            <img src="https://lifemadesweeter.com/wp-content/uploads/Easy-Cold-Brew-Coffee-Recipe-Vegan-Dairy-Free-Paleo-Healthy.jpg" class="card-img-top" alt="Cold brew coffee over ice">
+            <div class="card-body d-flex flex-column">
+              <h6 class="fw-bold mb-1">Cold Brew Coffee</h6>
+              <p class="text-muted small mb-2">Smooth 18‑hour cold brew served over ice.</p>
+              <div class="mt-auto d-flex justify-content-between align-items-center">
+                <span class="price">$3.95</span>
+                <button class="btn btn-sm btn-dark add-btn" data-mods="milk,Whole,Oat,Almond;size,Small,Medium,Large">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Duplicate a few more items to fill the grid visually -->
+        <div class="col-12 col-sm-6 col-lg-4 menu-item" data-cat="crepes" data-name="Strawberry Nutella Crepe" data-price="9.50" data-id="itm005">
+          <div class="card h-100 order-card">
+            <img src="https://images.unsplash.com/photo-1551024709-8f23befc6cf7?q=80&w=1600&auto=format&fit=crop" class="card-img-top" alt="Strawberry Nutella crepe">
+            <div class="card-body d-flex flex-column">
+              <h6 class="fw-bold mb-1">Strawberry Nutella Crepe</h6>
+              <p class="text-muted small mb-2">Classic folded crepe with fresh strawberries and hazelnut spread.</p>
+              <div class="mt-auto d-flex justify-content-between align-items-center">
+                <span class="price">$9.50</span>
+                <button class="btn btn-sm btn-dark add-btn" data-mods="extras,Whipped Cream,Almonds,Pistachio">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-4 menu-item" data-cat="coffee" data-name="Caramel Latte" data-price="4.75" data-id="itm006">
+          <div class="card h-100 order-card">
+            <img src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?q=80&w=1600&auto=format&fit=crop" class="card-img-top" alt="Caramel latte">
+          <div class="card-body d-flex flex-column">
+              <h6 class="fw-bold mb-1">Caramel Latte</h6>
+              <p class="text-muted small mb-2">Espresso with steamed milk and caramel drizzle.</p>
+              <div class="mt-auto d-flex justify-content-between align-items-center">
+                <span class="price">$4.75</span>
+                <button class="btn btn-sm btn-dark add-btn" data-mods="milk,Whole,Oat,Almond;size,Small,Medium,Large">Add</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sticky CTA on mobile -->
+      <div class="sticky-cart-cta mt-3 d-md-none">
+        <div class="container">
+          <button class="btn btn-dark w-100 py-2" data-bs-toggle="offcanvas" data-bs-target="#cart" aria-controls="cart">
+            <i class="fa-solid fa-bag-shopping me-1"></i> View Cart • <span id="cartTotalMini">$0.00</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NEW: DELIVERY SECTION (reuses established provider icons) ===== -->
+  <section class="offwhite py-5 border-top">
+    <div class="container text-center">
+      <h2 class="mb-2">Delivery &amp; Pickup</h2>
+      <p class="lead">Prefer an app? Order through our delivery partners.</p>
+      <div class="d-flex justify-content-center align-items-center gap-4 my-3 provider-icons">
+        <a href="#" aria-label="Order on DoorDash" rel="noopener">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/DoorDash_Logo.svg" alt="DoorDash" height="28">
+        </a>
+        <a href="#" aria-label="Order on Uber Eats" rel="noopener">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b3/Uber_Eats_2020_logo.svg" alt="Uber Eats" height="28">
+        </a>
+        <a href="#" aria-label="Order on Grubhub" rel="noopener">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/GrubHub_Logo_2016.svg" alt="Grubhub" height="28">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NEW: CATERING SECTION ===== -->
+  <section class="pistachio py-5">
+    <div class="container">
+      <div class="row g-4 align-items-center">
+        <div class="col-12 col-lg-6">
+          <h2 class="mb-2">Catering</h2>
+          <p class="mb-3">From office breakfasts to weekend celebrations, we’ll bring Sukar to your group. Tell us a little about your event and we’ll get back to you shortly.</p>
+          <ul class="mb-4">
+            <li>Customizable crepe platters and dessert bars</li>
+            <li>Coffee and Lotus energy drink packages</li>
+            <li>On‑site setup available</li>
+          </ul>
+        </div>
+        <div class="col-12 col-lg-6">
+          <form class="bg-white text-dark rounded-4 p-3 p-md-4 shadow-sm" novalidate>
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="form-label small">Name</label>
+                <input type="text" class="form-control" placeholder="Your name">
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label small">Email</label>
+                <input type="email" class="form-control" placeholder="you@example.com">
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label small">Event Date</label>
+                <input type="date" class="form-control">
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="form-label small">Guest Count</label>
+                <input type="number" min="1" class="form-control" placeholder="e.g., 40">
+              </div>
+              <div class="col-12">
+                <label class="form-label small">Details</label>
+                <textarea class="form-control" rows="3" placeholder="Tell us about your event, menu ideas, timing, etc."></textarea>
+              </div>
+            </div>
+            <button type="button" class="btn btn-dark w-100 mt-3">Send Catering Inquiry</button>
+            <p class="small text-muted mt-2 mb-0">This is a demo form. Connect to your email or CRM later.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OFFCANVAS CART ===== -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="cart" aria-labelledby="cartLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="cartLabel">Your Order</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+      <div class="d-flex gap-2 mb-3" role="group" aria-label="Order type">
+        <input type="radio" class="btn-check" name="ordertype" id="pickup" autocomplete="off" checked>
+        <label class="btn btn-outline-dark btn-sm" for="pickup"><i class="fa-solid fa-bag-shopping me-1"></i>Pickup</label>
+        <input type="radio" class="btn-check" name="ordertype" id="delivery" autocomplete="off">
+        <label class="btn btn-outline-dark btn-sm" for="delivery"><i class="fa-solid fa-motorcycle me-1"></i>Delivery</label>
+      </div>
+
+      <div id="cartLines" class="flex-grow-1 overflow-auto">
+        <p class="text-muted small mb-0" id="cartEmpty">Your cart is empty. Add something tasty!</p>
+      </div>
+
+      <div class="mt-3">
+        <div class="d-flex justify-content-between"><span class="small">Subtotal</span><span class="small" id="subtotal">$0.00</span></div>
+        <div class="d-flex justify-content-between"><span class="small">Tax (7%)</span><span class="small" id="tax">$0.00</span></div>
+        <div class="d-flex justify-content-between"><span class="small">Tip</span><span class="small" id="tip">$0.00</span></div>
+
+        <div class="btn-group w-100 my-2" role="group" aria-label="Tip options">
+          <button class="btn btn-outline-dark btn-sm tip-btn" data-tip="0">No tip</button>
+          <button class="btn btn-outline-dark btn-sm tip-btn" data-tip="0.10">10%</button>
+          <button class="btn btn-outline-dark btn-sm tip-btn" data-tip="0.15">15%</button>
+          <button class="btn btn-outline-dark btn-sm tip-btn" data-tip="0.20">20%</button>
+        </div>
+
+        <div class="d-flex justify-content-between fw-bold fs-6 border-top pt-2"><span>Total</span><span id="grandTotal">$0.00</span></div>
+        <button class="btn btn-dark w-100 mt-2" id="checkoutBtn" disabled>
+          <i class="fa-solid fa-credit-card me-1"></i> Checkout
+        </button>
+        <p class="small text-muted mt-2 mb-0">* Demo page — connect to your POS or online ordering later.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER (same as Home) ===== -->
+  <footer id="footer" class="dark-bg text-white pt-5 pb-5">
+    <div class="container">
+      <div class="row align-items-center justify-content-center text-center gy-3">
+        <div class="col-12 d-flex flex-column flex-md-row align-items-center justify-content-center gap-3">
+          <img src="https://i.imgur.com/P6DecMX.png" class="footer-logo sukar-logo logo-crop" alt="Sukar logo" loading="lazy" decoding="async">
+          <p class="mb-0">&copy; 2025 Sukar</p>
+        </div>
+        <div class="col-12">
+          <h5 class="mb-1">Visit Us</h5>
+          <p class="mb-0">229 Del Prado Blvd N #6th<br>Cape Coral, FL 33909</p>
+        </div>
+      </div>
+      <div class="row gy-4 mt-4">
+        <div class="col-12 text-center">
+          <h5>Connect</h5>
+          <div class="d-flex justify-content-center gap-3">
+            <a href="#" class="text-white"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i><span class="visually-hidden">Facebook</span></a>
+            <a href="#" class="text-white"><i class="fab fa-instagram fa-lg" aria-hidden="true"></i><span class="visually-hidden">Instagram</span></a>
+            <a href="#" class="text-white"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+          </div>
+        </div>
+      </div>
+      <hr class="border-light border-opacity-25 my-4">
+      <div class="d-flex flex-column flex-md-row justify-content-center gap-3 small text-center">
+        <a href="#" class="text-white-50">Privacy Policy</a>
+        <a href="#" class="text-white-50">Terms of Service</a>
+        <a href="#" class="text-white-50">Careers</a>
+        <a href="#" class="text-white-50">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap bundle & custom JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+
+  <script>
+  /* ===== NAV: Close menu on link click + body lock (same behavior) ===== */
+  (() => {
+    const menu = document.getElementById('navMenu');
+    if(!menu) return;
+    const navLinks = menu.querySelectorAll('.nav-link');
+    const toggler  = document.querySelector('.global-navbar-toggler');
+    const bsCollapse = () => bootstrap.Collapse.getOrCreateInstance(menu, {toggle:false});
+    navLinks.forEach(link => link.addEventListener('click', () => { if(menu.classList.contains('show')) { bsCollapse().hide(); } }));
+    menu.addEventListener('show.bs.collapse', () => document.body.classList.add('menu-open'));
+    menu.addEventListener('hidden.bs.collapse', () => document.body.classList.remove('menu-open'));
+    if (toggler) toggler.addEventListener('click', () => {});
+  })();
+
+  /* ===== Simple search & filter ===== */
+  (() => {
+    const grid = document.getElementById('menuGrid');
+    const chips = document.querySelectorAll('.category-chip');
+    const search = document.getElementById('searchInput');
+
+    let activeCat = 'all';
+
+    function applyFilters(){
+      const q = (search.value || '').toLowerCase().trim();
+      const cards = grid.querySelectorAll('.menu-item');
+      cards.forEach(card => {
+        const inCat = activeCat === 'all' || card.dataset.cat === activeCat;
+        const text = `${card.dataset.name}`.toLowerCase();
+        const matches = !q || text.includes(q);
+        card.style.display = (inCat && matches) ? '' : 'none';
+      });
+    }
+
+    chips.forEach(btn => btn.addEventListener('click', () => {
+      chips.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCat = btn.dataset.filter;
+      applyFilters();
+    }));
+
+    search.addEventListener('input', applyFilters);
+    applyFilters();
+  })();
+
+  /* ===== Cart state ===== */
+  const cart = { lines: [], tipRate: 0 };
+  const els = {
+    lines: document.getElementById('cartLines'),
+    empty: document.getElementById('cartEmpty'),
+    subtotal: document.getElementById('subtotal'),
+    tax: document.getElementById('tax'),
+    tip: document.getElementById('tip'),
+    grand: document.getElementById('grandTotal'),
+    totalMini: document.getElementById('cartTotalMini'),
+    count: document.getElementById('cartCount'),
+    checkout: document.getElementById('checkoutBtn')
+  };
+
+  function money(n){ return `$${n.toFixed(2)}`; }
+
+  function renderCart(){
+    els.lines.innerHTML = '';
+    if(cart.lines.length === 0){ els.empty.style.display = ''; } else { els.empty.style.display = 'none'; }
+
+    let sub = 0;
+    cart.lines.forEach((ln, idx) => {
+      const lineTotal = ln.qty * ln.price;
+      sub += lineTotal;
+      const mods = ln.mods && ln.mods.length ? `<div class="small text-muted">${ln.mods.join(', ')}${ln.note?` — ${ln.note}`:''}</div>` : (ln.note?`<div class="small text-muted">${ln.note}</div>`:'');
+      const div = document.createElement('div');
+      div.className = 'cart-line py-2';
+      div.innerHTML = `
+        <div class="d-flex align-items-start gap-2">
+          <div class="qty-stepper" aria-label="Quantity for ${ln.name}">
+            <button class="btn-decr" aria-label="Decrease quantity" data-idx="${idx}">−</button>
+            <input value="${ln.qty}" inputmode="numeric" aria-live="polite" readonly>
+            <button class="btn-incr" aria-label="Increase quantity" data-idx="${idx}">+</button>
+          </div>
+          <div class="flex-grow-1 min-w-0">
+            <div class="d-flex justify-content-between gap-2">
+              <strong class="text-truncate">${ln.name}</strong>
+              <span>${money(lineTotal)}</span>
+            </div>
+            ${mods}
+          </div>
+          <button class="btn btn-sm btn-link text-danger p-0 ms-1 btn-remove" data-idx="${idx}" aria-label="Remove ${ln.name}"><i class="fa-solid fa-trash"></i></button>
+        </div>`;
+      els.lines.appendChild(div);
+    });
+
+    const tax = sub * 0.07;
+    const tip = sub * cart.tipRate;
+    const grand = sub + tax + tip;
+
+    els.subtotal.textContent = money(sub);
+    els.tax.textContent = money(tax);
+    els.tip.textContent = money(tip);
+    els.grand.textContent = money(grand);
+    els.totalMini.textContent = money(grand);
+    els.count.textContent = cart.lines.reduce((a,b)=>a+b.qty,0);
+
+    els.checkout.disabled = cart.lines.length === 0;
+  }
+
+  function addLine(data){
+    // If same item + same mods + same note, merge
+    const key = JSON.stringify({id:data.id, mods:data.mods, note:data.note});
+    const existing = cart.lines.find(l => JSON.stringify({id:l.id, mods:l.mods, note:l.note}) === key);
+    if(existing){ existing.qty += 1; }
+    else { cart.lines.push({...data, qty: 1}); }
+    renderCart();
+  }
+
+  // Handle Add buttons with simple modifiers dialog
+  document.querySelectorAll('.add-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const card = e.currentTarget.closest('.menu-item');
+      const item = {
+        id: card.dataset.id,
+        name: card.dataset.name,
+        price: parseFloat(card.dataset.price),
+        mods: [],
+        note: ''
+      };
+
+      const raw = btn.dataset.mods || '';
+      const groups = raw.split(';').filter(Boolean).map(s=>s.split(','));
+
+      // Build a lightweight modal for modifiers
+      const modal = document.createElement('div');
+      modal.className = 'modal fade';
+      modal.tabIndex = -1;
+      modal.innerHTML = `
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h6 class="modal-title">Customize: ${item.name}</h6>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ${groups.map(g=>{
+                const label = g[0];
+                const opts = g.slice(1);
+                if(!label) return '';
+                return `
+                  <div class="mb-2">
+                    <div class="small fw-bold mb-1 text-uppercase">${label}</div>
+                    <div class="d-flex flex-wrap gap-2">${opts.map(o=>`<label class="modifier-pill"><input type="checkbox" value="${o}"><span>${o}</span></label>`).join('')}</div>
+                  </div>`
+              }).join('')}
+              <div class="mt-3">
+                <label class="form-label small">Special instructions</label>
+                <textarea class="form-control" id="modNote" rows="2" placeholder="Add a note (optional)"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+              <div class="qty-stepper" aria-label="Quantity">
+                <button id="mDec" aria-label="Decrease">−</button>
+                <input id="mQty" value="1" readonly>
+                <button id="mInc" aria-label="Increase">+</button>
+              </div>
+              <button class="btn btn-dark" id="mAdd">Add to cart • ${money(item.price)}</button>
+            </div>
+          </div>
+        </div>`;
+
+      document.body.appendChild(modal);
+      const bsModal = new bootstrap.Modal(modal);
+      bsModal.show();
+
+      // Toggle active on modifier pills
+      modal.querySelectorAll('.modifier-pill').forEach(el=>{
+        el.addEventListener('click', ()=>{
+          el.classList.toggle('active');
+          const cb = el.querySelector('input');
+          cb.checked = !cb.checked;
+        });
+      });
+
+      let qty = 1;
+      const qtyInput = modal.querySelector('#mQty');
+      const btnAdd = modal.querySelector('#mAdd');
+      modal.querySelector('#mInc').addEventListener('click', ()=>{ qty++; qtyInput.value = qty; btnAdd.textContent = `Add to cart • ${money(item.price*qty)}`; });
+      modal.querySelector('#mDec').addEventListener('click', ()=>{ qty = Math.max(1, qty-1); qtyInput.value = qty; btnAdd.textContent = `Add to cart • ${money(item.price*qty)}`; });
+
+      btnAdd.addEventListener('click', ()=>{
+        const selected = Array.from(modal.querySelectorAll('.modifier-pill input:checked')).map(i=>i.value);
+        const note = modal.querySelector('#modNote').value.trim();
+        // Push N lines with the chosen qty (simple pattern)
+        for(let i=0;i<qty;i++) addLine({id:item.id,name:item.name,price:item.price,mods:selected,note});
+        bsModal.hide();
+      });
+
+      modal.addEventListener('hidden.bs.modal', ()=>{ modal.remove(); });
+    });
+  });
+
+  // Cart events: increment, decrement, remove
+  document.getElementById('cart').addEventListener('click', (e)=>{
+    const idx = e.target.closest('[data-idx]')?.dataset.idx;
+    if(idx === undefined) return;
+    if(e.target.closest('.btn-incr')){ cart.lines[idx].qty++; }
+    else if(e.target.closest('.btn-decr')){ cart.lines[idx].qty = Math.max(1, cart.lines[idx].qty-1); }
+    else if(e.target.closest('.btn-remove')){ cart.lines.splice(idx,1); }
+    renderCart();
+  });
+
+  // Tip buttons
+  document.querySelectorAll('.tip-btn').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.tip-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    cart.tipRate = parseFloat(b.dataset.tip);
+    renderCart();
+  }));
+
+  // Fake checkout
+  document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+    alert('This is a demo. Hook up your payment/ordering provider here.');
+  });
+
+  // Initialize totals
+  renderCart();
+  </script>
+</body>
+</html>
