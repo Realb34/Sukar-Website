@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sukar — Careers</title>
+
+  <!-- Resource Hints for Mobile Performance -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Bootstrap & Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- ===== FULL CSS (identical palette, utilities, nav, hero styles) ===== -->
+  <style>
+    /* ============================================================
+       GLOBAL PALETTE & RESETS (identical to home)
+       ============================================================ */
+    :root{
+      --pistachio:#362417;
+      --offwhite:#f9f9f9;
+      --darkbg:#333;
+      --top-space: 180px;
+      --s3-veil:.55;
+      --s3-parallax:0px;
+      --s6-bg:url('https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1600&auto=format&fit=crop');
+    }
+    *,*::before,*::after{box-sizing:border-box;}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;scroll-behavior:smooth;}
+    img{max-width:100%;height:auto;display:block;}
+    .text-shadow{text-shadow:0 2px 6px rgba(0,0,0,.6);}    
+    .pistachio{background:var(--pistachio);color:#fff;}
+    .pistachio *{color:#fff;}
+    .offwhite{background:var(--offwhite);}    
+    .dark-bg{background:var(--darkbg);}    
+
+    /* Sukar logo utilities */
+    .sukar-logo{display:inline-block;vertical-align:middle;}
+    .logo-crop{--trim-t:0px;--trim-r:0px;--trim-b:0px;--trim-l:0px;clip-path:inset(var(--trim-t) var(--trim-r) var(--trim-b) var(--trim-l));margin-top:calc(-1*var(--trim-t));margin-right:calc(-1*var(--trim-r));margin-bottom:calc(-1*var(--trim-b));margin-left:calc(-1*var(--trim-l));}
+
+    /* ===== HERO / HEADER (kept identical) ===== */
+    #hero{position:relative;min-height:60vh;height:60vh;color:#fff;overflow:hidden;}
+    #hero::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:5;pointer-events:none;}
+    #heroCarousel{position:absolute;inset:0;height:100%;z-index:1;}
+    #heroCarousel .carousel-inner,#heroCarousel .carousel-item{height:100%;}
+    #heroCarousel .hero-slide-img{height:100%;width:100%;object-fit:cover;}
+    .hero-logo{width:120px;display:block;margin:2px auto 10px auto;z-index:10;position:relative;}
+
+    /* NAV (identical) */
+    #mainNav{position:relative;z-index:10;}
+    .hero-nav{background:transparent;color:#fff;}
+    .hero-nav.navbar.navbar-dark .navbar-toggler{border:0;}
+    .hero-nav.navbar.navbar-dark .navbar-toggler:focus{box-shadow:none;}
+    .hero-nav .nav-list{list-style:none;margin:0;padding:.5rem 0;display:flex;justify-content:center;align-items:center;gap:1rem;flex-wrap:wrap;}
+    .hero-nav .nav-list a{color:#fff;font-weight:700;text-decoration:none;padding:.35rem .85rem;display:inline-block;border:none;border-radius:999px;transition:transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease;}
+    .hero-nav .nav-list a:hover{background-color:rgba(255,255,255,.08);box-shadow:0 4px 10px rgba(0,0,0,.25);transform:translateY(-2px);}    
+
+    /* Mobile full-screen menu */
+    @media (max-width:767.98px){
+      #navMenu.collapse.show,#navMenu.collapsing{position:fixed;inset:0;width:100vw;height:100vh;background:rgba(0,0,0,.85);backdrop-filter:blur(6px) saturate(120%);display:flex !important;align-items:center;justify-content:center;padding:2rem;z-index:2000;transition:opacity .3s ease, transform .3s ease;}
+      #navMenu.collapsing{opacity:.01;transform:scale(.98);}#navMenu.collapse.show{opacity:1;transform:scale(1);}#navMenu .nav-list{flex-direction:column;gap:1.25rem;}body.menu-open{overflow:hidden;}
+      .social-icons{left:60px !important;}
+    }
+
+    #heroCarousel .carousel-caption{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);bottom:auto;z-index:10;animation:fadeSlideDown .6s ease-out both;width:min(90vw,1000px);}    
+
+    /* Social icons */
+    .social-icons{z-index:20;}
+    .social-icons a{opacity:.85;transition:opacity .2s;}
+    .social-icons a:hover{opacity:1;}
+    .follow-label{color:#fff;font-weight:300;font-size:.9rem;letter-spacing:.02em;display:flex;align-items:center;gap:.5rem;white-space:nowrap;}
+    .follow-label .thin-arrow{position:relative;display:inline-block;width:24px;height:1px;background-color:#fff;opacity:.9;}
+    .follow-label .thin-arrow::after{content:"";position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:0;height:0;border-left:6px solid #fff;border-top:4px solid transparent;border-bottom:4px solid transparent;}
+
+    /* Carousel arrows (image icon variant kept) */
+    .custom-arrow{position:absolute;width:56px;height:56px;top:50%;transform:translateY(-50%);background:transparent!important;border:none;opacity:1;z-index:10;padding:0;color:#fff;}
+    .custom-arrow.small-arrow{width:44px;height:44px;}
+    .custom-arrow .arrow-graphic{display:none !important;}
+    .custom-arrow .carousel-control-prev-icon,.custom-arrow .carousel-control-next-icon{display:block !important;background-position:center;background-repeat:no-repeat;background-size:contain;background-image:url('https://i.imgur.com/520xzls.png') !important;filter:drop-shadow(0 0 6px rgba(0,0,0,.8));}
+    .carousel-control-prev.custom-arrow .carousel-control-prev-icon{transform:rotate(90deg);}    
+    .carousel-control-next.custom-arrow .carousel-control-next-icon{transform:rotate(-90deg);}    
+    #hero .carousel-control-prev.custom-arrow{left:1rem;}#hero .carousel-control-next.custom-arrow{right:1rem;}
+
+    @keyframes fadeSlideDown{0%{opacity:0;transform:translate(-50%,calc(-50% - 30px));}100%{opacity:1;transform:translate(-50%,-50%);} }
+
+    /* Global hover */
+    .btn,.nav-link,.card,.custom-arrow,.social-icons a{transition:all .3s ease;}
+    .btn:hover,.nav-link:hover{transform:translateY(-2px) scale(1.05);} 
+    .card:hover{transform:scale(1.02);box-shadow:0 8px 16px rgba(0,0,0,.15);}    
+
+    /* Social positioning overrides (kept) */
+    .social-icons{top:20px !important;left:20px !important;flex-direction:row !important;}
+
+    /* Global mobile toggler (kept) */
+    .global-navbar-toggler{position:fixed;top:8px;right:8px;z-index:2001;}
+    @media (min-width:768px){.global-navbar-toggler{display:none;}}
+
+    /* ===== Careers page specific ===== */
+    .section-title{letter-spacing:.02em;}
+    .values-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:rgba(0,0,0,.08);}    
+    .perk-card{height:100%;}
+    .job-badge{font-size:.75rem;}
+    .step-num{width:36px;height:36px;border-radius:999px;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;}
+    .apply-sticky{position:sticky;top:1rem;}
+    .required::after{content:" *";color:#d9534f;}
+
+    /* ===== Requested changes ===== */
+    /* 1) Card titles use the brand brown */
+    .card-title{color:var(--pistachio) !important;}
+    /* 2) Footer logo fixed width */
+    .footer-logo{width:120px;height:auto;}
+
+    @media (max-width:992px){#hero{min-height:50vh;height:50vh;} .hero-logo{width:100px;}}
+    @media (max-width:576px){#hero{min-height:45vh;height:45vh;} .follow-label{display:none;}}
+  </style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="70">
+
+  <!-- ===== GLOBAL MOBILE TOGGLER ===== -->
+  <button class="navbar-toggler global-navbar-toggler navbar-dark d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <!-- ===== SECTION 1 · HERO (shared header with new messaging) ===== -->
+  <header id="hero">
+    <div class="social-icons d-flex flex-row gap-3 position-absolute top-0 start-0 p-3">
+      <span class="follow-label">Follow us!<span class="thin-arrow" aria-hidden="true"></span></span>
+      <a href="#" class="text-white"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i><span class="visually-hidden">Facebook</span></a>
+      <a href="#" class="text-white"><i class="fab fa-instagram fa-lg" aria-hidden="true"></i><span class="visually-hidden">Instagram</span></a>
+      <a href="#" class="text-white"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+    </div>
+
+    <a href="#hero"><img src="https://i.imgur.com/P6DecMX.png" class="hero-logo sukar-logo logo-crop" style="--trim-t:22px;" alt="Sukar Logo" decoding="async" fetchpriority="high" /></a>
+
+    <nav id="mainNav" class="hero-nav navbar navbar-expand-md navbar-dark">
+      <div class="container justify-content-center position-relative">
+        <div class="collapse navbar-collapse justify-content-center" id="navMenu">
+          <ul class="nav-list navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="index.html#section2">About</a></li>
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="career.html">Career</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.html#section5">Menu</a></li>
+            <li class="nav-item"><a class="nav-link" href="location.html">Location</a></li>
+            <li class="nav-item"><a class="nav-link" href="franchise.html">Franchise</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.html#section8">Testimonials</a></li>
+            <li class="nav-item"><a class="nav-link" href="#footer">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="7000">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="https://images.unsplash.com/photo-1556906781-9a412961c28c?q=80&w=1600&auto=format&fit=crop" class="d-block w-100 hero-slide-img" alt="Team at work" decoding="async" fetchpriority="high" />
+          <div class="carousel-caption text-center">
+          </div>
+        </div>
+        <div class="carousel-item">
+          <img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=1600&auto=format&fit=crop" class="d-block w-100 hero-slide-img" alt="Making crepes" loading="lazy" decoding="async" />
+          <div class="carousel-caption text-center">
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== SECTION · Why Sukar ===== -->
+  <section id="life" class="offwhite py-5">
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6">
+          <h2 class="section-title mb-2">Life at Sukar</h2>
+          <p class="text-muted mb-4">We’re a hospitality-first crew who believe great experiences start with great teammates. Expect clear growth paths, flexible schedules, and a culture that values initiative and kindness.</p>
+          <div class="row g-3">
+            <div class="col-12 col-md-6 d-flex align-items-start gap-3">
+              <div class="values-icon"><i class="fa-solid fa-seedling" aria-hidden="true"></i></div>
+              <div>
+                <h6 class="mb-1">Grow Fast</h6>
+                <p class="mb-0 small text-muted">Training, cross-skilling, and real advancement opportunities.</p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-start gap-3">
+              <div class="values-icon"><i class="fa-solid fa-people-group" aria-hidden="true"></i></div>
+              <div>
+                <h6 class="mb-1">Team First</h6>
+                <p class="mb-0 small text-muted">Supportive leads, respectful shifts, and open communication.</p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-start gap-3">
+              <div class="values-icon"><i class="fa-solid fa-clock" aria-hidden="true"></i></div>
+              <div>
+                <h6 class="mb-1">Flexible Hours</h6>
+                <p class="mb-0 small text-muted">Part-time & full-time options built around your schedule.</p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 d-flex align-items-start gap-3">
+              <div class="values-icon"><i class="fa-solid fa-award" aria-hidden="true"></i></div>
+              <div>
+                <h6 class="mb-1">Recognized Wins</h6>
+                <p class="mb-0 small text-muted">Bonuses, shout-outs, and celebration of great service.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1200&auto=format&fit=crop" alt="Team" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION · Benefits ===== -->
+  <section id="benefits" class="py-5 pistachio">
+    <div class="container">
+      <h2 class="text-center mb-4">Benefits & Perks</h2>
+      <div class="row g-4">
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="card perk-card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title"><i class="fa-solid fa-dollar-sign me-2"></i>Competitive Pay</h5>
+              <p class="card-text">Hourly + tips for guest-facing roles, with regular performance reviews.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="card perk-card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title"><i class="fa-solid fa-cake-candles me-2"></i>Shift Treats</h5>
+              <p class="card-text">Free shift drink and crew discounts on our full menu.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="card perk-card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title"><i class="fa-solid fa-graduation-cap me-2"></i>Training</h5>
+              <p class="card-text">Clear onboarding, bar/kitchen certifications, and leadership tracks.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="card perk-card border-0 shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title"><i class="fa-solid fa-sun me-2"></i>Time & Flexibility</h5>
+              <p class="card-text">Flexible scheduling, PTO eligibility for full-time roles.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION · Openings + Filters + Application ===== -->
+  <section id="openings" class="offwhite py-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <h2 class="mb-0 me-2">Open Roles</h2>
+            <span class="badge text-bg-dark" id="countBadge">0 roles</span>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <div class="btn-group" role="group" aria-label="Filters">
+              <button class="btn btn-outline-dark active" data-filter="all">All</button>
+              <button class="btn btn-outline-dark" data-filter="front">Front of House</button>
+              <button class="btn btn-outline-dark" data-filter="back">Back of House</button>
+              <button class="btn btn-outline-dark" data-filter="mgmt">Management</button>
+            </div>
+            <div class="ms-auto d-flex align-items-center gap-2 flex-grow-1" style="max-width:380px;">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              <input id="searchInput" type="search" class="form-control" placeholder="Search by title, keyword…" />
+            </div>
+          </div>
+
+          <div id="rolesList" class="accordion accordion-flush">
+            <!-- Roles injected by JS below -->
+          </div>
+        </div>
+
+        <!-- Sticky Apply Box -->
+        <div class="col-lg-4">
+          <div class="card shadow-sm apply-sticky">
+            <div class="card-body">
+              <h5 class="card-title mb-2">Quick Apply</h5>
+              <p class="text-muted small">Submit once — we’ll match you to the best-fit role. You can also apply directly from each opening.</p>
+              <form id="applyForm" novalidate>
+                <div class="mb-3">
+                  <label class="form-label required" for="applyPosition">Position</label>
+                  <select id="applyPosition" class="form-select" required>
+                    <option value="" selected>Select a role…</option>
+                    <!-- Options injected by JS -->
+                  </select>
+                  <div class="invalid-feedback">Please choose a position.</div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label required" for="fullName">Full name</label>
+                  <input id="fullName" class="form-control" required />
+                  <div class="invalid-feedback">Your name is required.</div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label required" for="email">Email</label>
+                  <input id="email" type="email" class="form-control" required />
+                  <div class="invalid-feedback">Enter a valid email.</div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="phone">Phone</label>
+                  <input id="phone" type="tel" class="form-control" placeholder="Optional" />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label required" for="availability">Availability</label>
+                  <select id="availability" class="form-select" required>
+                    <option value="" selected>Select…</option>
+                    <option>Full-time</option>
+                    <option>Part-time</option>
+                    <option>Seasonal</option>
+                  </select>
+                  <div class="invalid-feedback">Please select availability.</div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="resume">Resume (PDF)</label>
+                  <input id="resume" type="file" accept="application/pdf" class="form-control" />
+                  <div class="form-text">Max 5MB. Optional — you can paste experience below.</div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="notes">Experience / Notes</label>
+                  <textarea id="notes" rows="4" class="form-control" placeholder="Tell us about your relevant experience, availability constraints, or preferred location."></textarea>
+                </div>
+                <button class="btn btn-dark w-100" type="submit">Submit Application</button>
+                <small class="d-block text-muted mt-2">By applying, you agree to our <a href="#">Privacy Policy</a>.</small>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION · FAQ ===== -->
+  <section id="faq" class="dark-bg text-white py-5">
+    <div class="container">
+      <h2 class="text-center mb-4">FAQs</h2>
+      <div class="accordion" id="faqAcc">
+        <div class="accordion-item bg-transparent text-white border-secondary">
+          <h2 class="accordion-header" id="q1"><button class="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#a1" aria-expanded="false" aria-controls="a1">Do I need prior experience?</button></h2>
+          <div id="a1" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body">Experience helps, but we train for most roles. Bring a great attitude and willingness to learn.</div></div>
+        </div>
+        <div class="accordion-item bg-transparent text-white border-secondary">
+          <h2 class="accordion-header" id="q2"><button class="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#a2">What are the age and work eligibility requirements?</button></h2>
+          <div id="a2" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body">You must meet local minimum age requirements and be authorized to work in the U.S.</div></div>
+        </div>
+        <div class="accordion-item bg-transparent text-white border-secondary">
+          <h2 class="accordion-header" id="q3"><button class="accordion-button collapsed bg-transparent text-white" type="button" data-bs-toggle="collapse" data-bs-target="#a3">Can I apply for multiple roles?</button></h2>
+          <div id="a3" class="accordion-collapse collapse" data-bs-parent="#faqAcc"><div class="accordion-body">Yes. Apply once via Quick Apply and note the roles you’re interested in; we’ll consider you for all matches.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER (identical structure) ===== -->
+  <footer id="footer" class="dark-bg text-white pt-5 pb-5">
+    <div class="container">
+      <div class="row align-items-center justify-content-center text-center gy-3">
+        <div class="col-12 d-flex flex-column flex-md-row align-items-center justify-content-center gap-3">
+          <img src="https://i.imgur.com/P6DecMX.png" class="footer-logo sukar-logo logo-crop" alt="Sukar" loading="lazy" decoding="async" />
+          <p class="mb-0">&copy; 2025 Sukar</p>
+        </div>
+        <div class="col-12">
+          <h5 class="mb-1">Visit Us</h5>
+          <p class="mb-0">229 Del Prado Blvd N #6th<br />Cape Coral, FL 33909</p>
+        </div>
+      </div>
+
+      <div class="row gy-4 mt-4">
+        <div class="col-12 text-center">
+          <h5>Connect</h5>
+          <div class="d-flex justify-content-center gap-3">
+            <a href="#" class="text-white"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i><span class="visually-hidden">Facebook</span></a>
+            <a href="#" class="text-white"><i class="fab fa-instagram fa-lg" aria-hidden="true"></i><span class="visually-hidden">Instagram</span></a>
+            <a href="#" class="text-white"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-light border-opacity-25 my-4" />
+      <div class="d-flex flex-column flex-md-row justify-content-center gap-3 small text-center">
+        <a href="#" class="text-white-50">Privacy Policy</a>
+        <a href="#" class="text-white-50">Terms of Service</a>
+        <a href="career.html" class="text-white-50">Careers</a>
+        <a href="#" class="text-white-50">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+
+  <!-- ===== PAGE JS (keeps nav behavior + builds roles, filters, and apply form) ===== -->
+  <script>
+    /* NAV behavior parity with home */
+    (() => {
+      const menu = document.getElementById('navMenu');
+      if(!menu) return;
+      const navLinks = menu.querySelectorAll('.nav-link');
+      const toggler = document.querySelector('.global-navbar-toggler');
+      const bsCollapse = () => bootstrap.Collapse.getOrCreateInstance(menu, {toggle:false});
+      navLinks.forEach(link => link.addEventListener('click', () => { if(menu.classList.contains('show')) bsCollapse().hide(); }));
+      menu.addEventListener('show.bs.collapse', () => document.body.classList.add('menu-open'));
+      menu.addEventListener('hidden.bs.collapse', () => document.body.classList.remove('menu-open'));
+      if(toggler){ toggler.addEventListener('click', () => {}); }
+    })();
+
+    /* Roles data (example set — replace with live data source if desired) */
+    const ROLES = [
+      { id:'barista-1', title:'Barista', dept:'front', location:'Cape Coral, FL', type:'Part-time', tags:['Guest Service','Espresso'], summary:'Craft beverages, engage guests, and keep the bar sparkling.',
+        duties:['Prepare espresso drinks and specialty beverages','Deliver friendly, efficient service','Maintain bar and dining area cleanliness','Support opening/closing checklists'],
+        quals:['Customer-facing experience a plus','Food handler certification (or willingness to obtain)','Weekend availability'] },
+      { id:'shift-1', title:'Shift Lead', dept:'mgmt', location:'Cape Coral, FL', type:'Full-time', tags:['Leadership','Scheduling'], summary:'Lead shifts, coach teammates, and ensure smooth daily operations.',
+        duties:['Open/close store and cash procedures','Coach team on speed & hospitality','Manage break schedules and stations','Handle guest escalations with care'],
+        quals:['6+ months in a lead role preferred','Excellent communicator','ServSafe a plus'] },
+      { id:'cook-1', title:'Line Cook (Crepes)', dept:'back', location:'Cape Coral, FL', type:'Full-time', tags:['Kitchen','Prep'], summary:'Execute our sweet & savory crepes with consistency and pace.',
+        duties:['Prep batters, fillings, and toppings','Cook to spec and plate beautifully','Track station par levels','Follow food safety and cleanliness standards'],
+        quals:['Line experience preferred','Knife & station skills','Evening/weekend availability'] },
+    ];
+
+    /* Build roles UI */
+    const rolesList = document.getElementById('rolesList');
+    const applyPosition = document.getElementById('applyPosition');
+    const countBadge = document.getElementById('countBadge');
+    const searchInput = document.getElementById('searchInput');
+
+    function renderRoles(filter='all', query=''){
+      const q = query.trim().toLowerCase();
+      const filtered = ROLES.filter(r => (filter==='all' || r.dept===filter) && (!q || (r.title+" "+r.tags.join(' ')+" "+r.summary).toLowerCase().includes(q)));
+      rolesList.innerHTML = filtered.map((r,idx)=>{
+        const accId = `acc-${r.id}`;
+        const tagBadges = r.tags.map(t=>`<span class="badge text-bg-secondary me-1 job-badge">${t}</span>`).join('');
+        return `
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="h-${accId}">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c-${accId}" aria-expanded="false" aria-controls="c-${accId}">
+              <div class="w-100 d-flex flex-column flex-md-row align-items-md-center gap-2">
+                <span class="fw-semibold">${r.title}</span>
+                <span class="ms-md-2 small text-muted">${r.location} • ${r.type}</span>
+                <span class="ms-md-auto">${tagBadges}</span>
+              </div>
+            </button>
+          </h2>
+          <div id="c-${accId}" class="accordion-collapse collapse" aria-labelledby="h-${accId}" data-bs-parent="#rolesList">
+            <div class="accordion-body">
+              <p class="mb-2">${r.summary}</p>
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <h6>Responsibilities</h6>
+                  <ul class="mb-0">${r.duties.map(d=>`<li>${d}</li>`).join('')}</ul>
+                </div>
+                <div class="col-md-6">
+                  <h6>Qualifications</h6>
+                  <ul class="mb-0">${r.quals.map(d=>`<li>${d}</li>`).join('')}</ul>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <button class="btn btn-dark" data-apply="${r.title}"><i class="fa-solid fa-paper-plane me-2"></i>Apply Now</button>
+                <a class="btn btn-outline-dark" href="#faq">Questions?</a>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+      countBadge.textContent = `${filtered.length} role${filtered.length!==1?'s':''}`;
+      // Rebind apply buttons
+      rolesList.querySelectorAll('[data-apply]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const role = e.currentTarget.getAttribute('data-apply');
+          applyPosition.value = role;
+          document.getElementById('fullName').focus();
+          window.scrollTo({top: document.getElementById('applyForm').getBoundingClientRect().top + window.scrollY - 100, behavior:'smooth'});
+        });
+      });
+      // Update apply select options
+      applyPosition.innerHTML = `<option value="" selected>Select a role…</option>` + ROLES.map(r=>`<option>${r.title}</option>`).join('');
+    }
+
+    // Initial render
+    renderRoles('all','');
+
+    // Filter buttons
+    document.querySelectorAll('[data-filter]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        renderRoles(btn.dataset.filter, searchInput.value);
+      });
+    });
+
+    // Search
+    searchInput.addEventListener('input', ()=>{
+      const active = document.querySelector('[data-filter].active')?.dataset.filter || 'all';
+      renderRoles(active, searchInput.value);
+    });
+
+    /* Quick Apply validation + fake submit */
+    (()=>{
+      const form = document.getElementById('applyForm');
+      form.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        if(!form.checkValidity()){
+          e.stopPropagation();
+          form.classList.add('was-validated');
+          return;
+        }
+        // Simple success toast/modal
+        const name = document.getElementById('fullName').value || 'there';
+        const toast = document.createElement('div');
+        toast.className = 'toast align-items-center text-bg-dark border-0 position-fixed bottom-0 end-0 m-3';
+        toast.role = 'alert';
+        toast.innerHTML = `<div class="d-flex"><div class="toast-body">Thanks, ${name}! Your application has been received. We\'ll be in touch soon.</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>`;
+        document.body.appendChild(toast);
+        const bsToast = new bootstrap.Toast(toast, {delay:4000});
+        bsToast.show();
+        form.reset();
+        form.classList.remove('was-validated');
+        applyPosition.innerHTML = `<option value="" selected>Select a role…</option>` + ROLES.map(r=>`<option>${r.title}</option>`).join('');
+      });
+    })();
+  </script>
+
+  <!-- Optional: JSON-LD schema for SEO (sample for one role) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "JobPosting",
+    "title": "Barista",
+    "description": "Craft beverages, engage guests, and keep the bar sparkling.",
+    "employmentType": "PART_TIME",
+    "hiringOrganization": {"@type": "Organization","name": "Sukar","sameAs": "https://example.com"},
+    "jobLocation": {"@type": "Place","address": {"@type": "PostalAddress","addressLocality": "Cape Coral","addressRegion": "FL","addressCountry": "US"}},
+    "datePosted": "2025-08-01"
+  }
+  </script>
+</body>
+</html>
