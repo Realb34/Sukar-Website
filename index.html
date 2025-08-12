@@ -356,21 +356,25 @@
   .stars-centered{display:block;margin-left:auto;margin-right:auto;}
   /* Smaller quotes */
   #testiCarousel .blockquote p{font-size:1rem;} /* smaller than fs-4 */
-  /* Place arrows on the same line as quotes using CSS grid */
+
+  /* UPDATED: Place arrows on the same line as quotes using FLEX
+     (replaces earlier grid approach for broader compatibility) */
   #testiCarousel{
-    display:grid;
-    grid-template-columns:auto 1fr auto;
+    display:flex;
     align-items:center;
     gap:1rem;
   }
-  #testiCarousel .carousel-inner{grid-column:2;}
+  #testiCarousel .carousel-inner{
+    order:2;
+    flex:1 1 auto;
+  }
   #testiCarousel .carousel-control-prev.custom-arrow,
   #testiCarousel .carousel-control-next.custom-arrow{
     position:static;
     width:36px;height:36px;
   }
-  #testiCarousel .carousel-control-prev.custom-arrow{grid-column:1;justify-self:end;}
-  #testiCarousel .carousel-control-next.custom-arrow{grid-column:3;justify-self:start;}
+  #testiCarousel .carousel-control-prev.custom-arrow{order:1;}
+  #testiCarousel .carousel-control-next.custom-arrow{order:3;}
 
   /* ============================================================
      SECTION 9
@@ -452,7 +456,7 @@
   /* Section 6 play button centering */
   .play-btn{margin-left:auto;margin-right:auto;}
 
-  /* Section 8 arrow positions (overridden by grid for inline layout) */
+  /* Section 8 arrow positions (overridden by flex for inline layout) */
   #testiCarousel .carousel-control-prev.custom-arrow{left:auto;}
   #testiCarousel .carousel-control-next.custom-arrow{right:auto;}
 
@@ -569,8 +573,10 @@
       <div class="collapse navbar-collapse justify-content-center" id="navMenu">
         <ul class="nav-list navbar-nav">
           <li class="nav-item"><a class="nav-link" href="#section2">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="#section3">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="career.html">Career</a></li>
           <li class="nav-item"><a class="nav-link" href="#section5">Menu</a></li>
+          <li class="nav-item"><a class="nav-link" href="location.html">Location</a></li>
+          <li class="nav-item"><a class="nav-link" href="franchise.html">Franchise</a></li>
           <li class="nav-item"><a class="nav-link" href="#section8">Testimonials</a></li>
           <li class="nav-item"><a class="nav-link" href="#footer">Contact</a></li>
         </ul>
@@ -642,9 +648,9 @@
   <div class="container">
     <div class="row g-4 text-center">
       <div class="col-6 col-md-3"><img src="https://i.imgur.com/0wIDKMB.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"></div>
-      <div class="col-6 col-md-3"><img src="https://i.imgur.com/x4RIizz.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"><p>be images of</p></div>
-      <div class="col-6 col-md-3"><img src="https://i.imgur.com/R0F3Dx5.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"><p>feature item</p></div>
-      <div class="col-6 col-md-3"><img src="https://i.imgur.com/SaDJb3I.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"><p>logos (I can give an example)</p></div>
+      <div class="col-6 col-md-3"><img src="https://i.imgur.com/x4RIizz.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"></div>
+      <div class="col-6 col-md-3"><img src="https://i.imgur.com/R0F3Dx5.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"></div>
+      <div class="col-6 col-md-3"><img src="https://i.imgur.com/SaDJb3I.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"></div>
     </div>
   </div>
 </section>
