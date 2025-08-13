@@ -28,9 +28,9 @@
     --top-space: 180px;
 
     /* Section 3 scroll-reveal variables */
-    --s3-veil: .55;       /* 0 (no veil) to ~.7 (more dim) */
+    --s3-veil: .35;       /* 0 (no veil) to ~.7 (more dim) */
     --s3-parallax: 0px;   /* background-position-y offset */
-
+    --s3-base: -120px;
     /* === NEW: Section 6 background image URL (Change 2) ===
        Replace the URL below with your desired image URL. */
     --s6-bg: url('https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1600&auto=format&fit=crop'); 
@@ -278,7 +278,7 @@
     content:"";
     position:absolute;
     inset:0;
-    background:url('https://food.fnr.sndimg.com/content/dam/images/food/fullset/2022/06/28/WU3109-ree-drummond-pancake-mix-dessert-crepes_4x3.jpg.rend.hgtvcom.616.462.85.suffix/1656434607859.webp') center / cover no-repeat;
+    background:url('https://i.imgur.com/jKesbxz.jpeg') center / cover no-repeat;
     background-position-y: var(--s3-parallax);
     filter:blur(2px);
     transform:scale(1.03); /* compensate blur edge crop */
@@ -669,26 +669,26 @@
   <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img src="https://img.cdn4dd.com/p/fit=cover,width=1200,height=1200,format=auto,quality=90/media/photos/559a2956-b4d3-4a1e-bfff-143d2383d336-retina-large.jpg" class="d-block w-100 hero-slide-img" alt="Slide 1" decoding="async" fetchpriority="high">
+        <img src="https://lh4.googleusercontent.com/proxy/dvL0lXJxlkRkPWwZarUNSIwWRuTZfuSwVh7ASYVMaDM8KVhsyqih7dHztJHhprIvF_xg2oZS7bq2NM1ZB4tOb8KwQwiAyxrYM77cbD-oXgRRd64wHPCo02ek83WlyNbSmnvEstTvr6j9ptU" class="d-block w-100 hero-slide-img" alt="Slide 1" decoding="async" fetchpriority="high">
         <div class="carousel-caption text-center">
-          <h1 class="display-4 fw-bold text-shadow">First Slide Product Title</h1>
-          <h4 class="lead mb-3 text-shadow">First Slide Subtitle</h4>
+          <h1 class="display-4 fw-bold text-shadow">Fruit and Ice Cream Crepe</h1>
+          <h4 class="lead mb-3 text-shadow">Delicious hard scooped ice cream, any fruit of your choice all topped on a warmed crepe</h4>
           <a href="#section5" class="btn btn-light hero-cta rounded-pill px-4">View Menu</a>
         </div>
       </div>
       <div class="carousel-item">
-        <img src="https://s3-media0.fl.yelpcdn.com/bphoto/9ybSb777yjtBGsiNudn2BA/348s.jpg" class="d-block w-100 hero-slide-img" alt="Slide 2" loading="lazy" decoding="async">
+        <img src="https://recipes.net/wp-content/uploads/2022/09/choco-banana-crepe.jpg" class="d-block w-100 hero-slide-img" alt="Slide 2" loading="lazy" decoding="async">
         <div class="carousel-caption text-center">
-          <h1 class="display-4 fw-bold text-shadow">Second Slide Product Title</h1>
-          <h4 class="lead mb-3 text-shadow">Second Slide Subtitle</h4>
+          <h1 class="display-4 fw-bold text-shadow">Banana and Nutella crepe</h1>
+          <h4 class="lead mb-3 text-shadow">Nutella filling with banana slices wrapped in a crispy and soft crepe</h4>
           <a href="#section5" class="btn btn-light hero-cta rounded-pill px-4">View Menu</a>
         </div>
       </div>
       <div class="carousel-item">
-        <img src="https://meltndip.com/wp-content/uploads/2022/06/lotus_crepe.jpg" class="d-block w-100 hero-slide-img" alt="Slide 3" loading="lazy" decoding="async">
+        <img src="https://insanelygoodrecipes.com/wp-content/uploads/2023/04/Sweet-Homemade-Crepes-with-Bananas-Berries-and-Chocolate.jpg" class="d-block w-100 hero-slide-img" alt="Slide 3" loading="lazy" decoding="async">
         <div class="carousel-caption text-center">
-          <h1 class="display-4 fw-bold text-shadow">Third Slide Product Title</h1>
-          <h4 class="lead mb-3 text-shadow">Third Slide Subtitle</h4>
+          <h1 class="display-4 fw-bold text-shadow">Green and Berry Crepe</h1>
+          <h4 class="lead mb-3 text-shadow">All the lightest elements of some of the most refreshing ingredients, packed into one</h4>
           <a href="#section5" class="btn btn-light hero-cta rounded-pill px-4">View Menu</a>
         </div>
       </div>
@@ -714,7 +714,7 @@
 <!-- ===== SECTION 3 ===== -->
 <section id="section3" class="custom-bg py-5">
   <div class="info-box mx-auto text-center text-white p-5 rounded-4">
-    <img src="assets/section3.jpg" class="img-fluid rounded-4 mb-4 opacity-70" alt="" loading="lazy" decoding="async">
+    <img src="assets/section3.jpg" class="img-fluid rounded-4 mb-4 opacity-90" alt="" loading="lazy" decoding="async">
     <h2>Main Title</h2>
     <h5 class="mb-3">subtitle for context</h5>
     <p class="small mb-4">Brief description tbh this can be anything, maybe employment contact xyz, maybe explaining the reason for the name/origin of the company and inspiration? Learn more button can take you to an article or blog or something that sam can write?</p>
@@ -923,7 +923,7 @@
 
     /* Parallax: tie bg to page scroll softly */
     const pageY = window.scrollY || window.pageYOffset;
-    const parallaxOffset = Math.round((pageY - section.offsetTop) * -0.2); // adjust intensity
+    const parallaxOffset = Math.round((pageY - section.offsetTop) * -0.2 - 250); // adjust intensity
     document.documentElement.style.setProperty('--s3-parallax', parallaxOffset + 'px');
 
     /* Reveal/Disappear: 0 at enter, 1 near center, back to 0 at exit */
