@@ -1,1018 +1,173 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="top">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sukar</title>
-
-  <!-- Resource Hints for Mobile Performance -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <!-- Bootstrap & Font Awesome -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
-  <!-- ===== FULL CSS ===== -->
-  <style>
-  /* ============================================================
-     GLOBAL PALETTE & RESETS
-     ============================================================ */
-  :root{
-    --pistachio:#362417;
-    --offwhite:#f9f9f9;
-    --darkbg:#333;
-
-    /* Space taken by logo + nav; updated via JS for precise centering */
-    --top-space: 180px;
-
-    /* Section 3 scroll-reveal variables */
-    --s3-veil: .35;       /* 0 (no veil) to ~.7 (more dim) */
-    --s3-parallax: 0px;   /* background-position-y offset */
-    --s3-base: -120px;
-    /* === NEW: Section 6 background image URL (Change 2) ===
-       Replace the URL below with your desired image URL. */
-    --s6-bg: url('https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1600&auto=format&fit=crop'); 
-  }
-
-  *,*::before,*::after{box-sizing:border-box;}
-  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;scroll-behavior:smooth;}
-  img{max-width:100%;height:auto;display:block;}
-  .text-shadow{text-shadow:0 2px 6px rgba(0,0,0,.6);}
-  .pistachio{background:var(--pistachio); color:#fff;}
-  .pistachio *{color:#fff;}
-  .offwhite{background:var(--offwhite);}
-  .dark-bg{background:var(--darkbg);}
-
-  /* ============================================================
-     SUKAR LOGO UTILITIES (Change 1 & 4 assist)
-     - Make PNG logos align nicely inline and visually trim any
-       transparent padding using clip-path + compensating margins.
-     ============================================================ */
-  .sukar-logo{
-    display:inline-block;
-    vertical-align:middle;      /* aligns with adjacent text/content */
-  }
-  /* Visual cropping for transparent padding without editing the file.
-     Set per-instance trims via CSS variables if needed. Defaults = 0. */
-  .logo-crop{
-    --trim-t:0px; --trim-r:0px; --trim-b:0px; --trim-l:0px;
-    clip-path: inset(var(--trim-t) var(--trim-r) var(--trim-b) var(--trim-l));
-    margin-top: calc(-1 * var(--trim-t));
-    margin-right: calc(-1 * var(--trim-r));
-    margin-bottom: calc(-1 * var(--trim-b));
-    margin-left: calc(-1 * var(--trim-l));
-  }
-
-  /* ============================================================
-     SECTION 1 · HERO
-     ============================================================ */
-  #hero{
-    position:relative;
-    height:100vh;
-    color:#fff;
-    overflow:hidden;
-  }
-  /* Dim overlay above images, below content */
-  #hero::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:rgba(0,0,0,.35);
-    z-index:5;
-    pointer-events:none;
-  }
-
-  /* Carousel sits as a background layer filling the entire hero */
-  #heroCarousel{
-    position:absolute;
-    inset:0;
-    height:100%;
-    z-index:1;                  /* below overlay and content */
-  }
-  #heroCarousel .carousel-inner,
-  #heroCarousel .carousel-item{height:100%;}
-  #heroCarousel .hero-slide-img{height:100%;width:100%;object-fit:cover;}
-
-  /* Logo at the very top, centered (Change 4: closer to top using logo-crop + tighter margin) */
-  .hero-logo{
-    width:120px;
-    display:block;
-    margin:2px auto 10px auto;  /* EVEN tighter gap from top (was 8px) */
-    z-index:10;                 /* above overlay */
-    position:relative;          /* participates in layout */
-  }
-
-  /* SECTION 1 NAV (UPDATED: collapsible on mobile; top-right toggler)
-     - Transparent background, bold white text, NO black borders,
-       and a hover animation. Collapses into a hamburger at < md. */
-  #mainNav{
-    position:relative;          /* in normal flow */
-    z-index:10;
-  }
-  .hero-nav{
-    background:transparent;     /* transparent background */
-    color:#fff;
-  }
-  /* Use Bootstrap navbar palette for white toggler icon */
-  .hero-nav.navbar.navbar-dark .navbar-toggler{border:0;}
-  .hero-nav.navbar.navbar-dark .navbar-toggler:focus{box-shadow:none;}
-  .hero-nav .nav-list{
-    list-style:none;
-    margin:0;
-    padding:.5rem 0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:1rem;
-    flex-wrap:wrap;             /* wrap on small screens (desktop state) */
-  }
-  .hero-nav .nav-list a{
-    color:#fff;
-    font-weight:700;            /* bold white text */
-    text-decoration:none;
-    padding:.35rem .85rem;
-    display:inline-block;
-    border:none;                /* removed black border per request */
-    border-radius:999px;
-    transition:transform .2s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease;
-  }
-  .hero-nav .nav-list a:hover{
-    background-color:rgba(255,255,255,.08);
-    box-shadow:0 4px 10px rgba(0,0,0,.25);
-    transform:translateY(-2px);
-  }
-
-  /* ===== Mobile full-screen menu (Change 2) ===== */
-  @media (max-width: 767.98px){
-    #navMenu.collapse.show,
-    #navMenu.collapsing{
-      position:fixed;
-      inset:0;
-      width:100vw;
-      height:100vh;
-      background:rgba(0,0,0,.85);
-      backdrop-filter:blur(6px) saturate(120%);
-      display:flex !important;
-      align-items:center;
-      justify-content:center;
-      padding:2rem;
-      z-index:2000;
-      transition:opacity .3s ease, transform .3s ease;
-    }
-    #navMenu.collapsing{opacity:.01;transform:scale(.98);}
-    #navMenu.collapse.show{opacity:1;transform:scale(1);}
-    #navMenu .nav-list{
-      flex-direction:column;
-      gap:1.25rem;
-    }
-    /* prevent background scroll when open */
-    body.menu-open{overflow:hidden;}
-    /* Social icons offset so they don't sit under the toggler */
-    .social-icons{left:60px !important;}
-  }
-
-  /* Center each slide's caption relative to the WEBPAGE (viewport) */
-  #heroCarousel .carousel-caption{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%, -50%);  /* true page center */
-    bottom:auto;
-    z-index:10;                 /* above overlay */
-    animation:fadeSlideDown .6s ease-out both;
-    width: min(90vw, 1000px);
-  }
-  /* Stronger, lighter-looking text with subtle glow */
-  #heroCarousel .carousel-caption h1{
-    color:#fff;
-    text-shadow:0 2px 10px rgba(0,0,0,.55), 0 0 18px rgba(255,255,255,.25);
-  }
-  #heroCarousel .carousel-caption h4{
-    color:#f8f9fa;
-    text-shadow:0 1px 8px rgba(0,0,0,.5), 0 0 12px rgba(255,255,255,.2);
-  }
-  /* Lighter CTA with hover animation */
-  .hero-cta.btn{
-    background:rgba(255,255,255,.92);
-    color:#000;
-    border-color:rgba(255,255,255,.95);
-    box-shadow:0 6px 18px rgba(0,0,0,.25), 0 0 0 0 rgba(255,255,255,.6);
-    transition:transform .25s ease, box-shadow .25s ease, background-color .25s ease, color .25s ease;
-  }
-  .hero-cta.btn:hover{
-    background:#fff;
-    color:#000;
-    transform:translateY(-2px) scale(1.05);
-    box-shadow:0 10px 26px rgba(0,0,0,.3), 0 0 0 6px rgba(255,255,255,.25);
-  }
-
-  /* ===== Social icons & "Follow us!" label (Change 2) ===== */
-  .social-icons{z-index:20;}    /* keep above overlay */
-  .social-icons a{opacity:.85;transition:opacity .2s;}
-  .social-icons a:hover{opacity:1;}
-  .follow-label{
-    color:#fff;
-    font-weight:300;
-    font-size:.9rem;
-    letter-spacing:.02em;
-    display:flex;
-    align-items:center;
-    gap:.5rem;
-    white-space:nowrap;
-  }
-  .follow-label .thin-arrow{
-    position:relative;
-    display:inline-block;
-    width:24px;
-    height:1px;                 /* really thin line */
-    background-color:#fff;
-    opacity:.9;
-  }
-  .follow-label .thin-arrow::after{
-    content:"";
-    position:absolute;
-    right:-6px;
-    top:50%;
-    transform:translateY(-50%);
-    width:0;height:0;
-    border-left:6px solid #fff; /* tiny triangle pointing to icons */
-    border-top:4px solid transparent;
-    border-bottom:4px solid transparent;
-  }
-
-  /* Base Bootstrap arrows (kept but visually hidden via new graphic) */
-  .carousel-control-prev,
-  .carousel-control-next{
-    width:60px;height:60px;top:50%;transform:translateY(-50%);
-    opacity:1 !important;background:transparent;border-radius:50%;transition:background .3s;
-  }
-  .carousel-control-prev:hover,
-  .carousel-control-next:hover{background:transparent;}
-  .carousel-control-prev-icon,
-  .carousel-control-next-icon{
-    width:100%;height:100%;background-size:100% 100%;
-    filter:invert(1) drop-shadow(0 0 6px rgba(0,0,0,.8));
-  }
-  .carousel-control-prev:focus,
-  .carousel-control-next:focus{box-shadow:none;outline:none;}
-
-  /* ============================================================
-     SECTION 2 (Change 1: make this a thin section overall)
-     ============================================================ */
-  .section2-thin{padding-top:.75rem !important; padding-bottom:.75rem !important;} /* thinner vertical space */
-  .section2-logo{max-width:140px; max-height:70px;} /* smaller logo cap */
-
-  /* ============================================================
-     SECTION 3  (Change 4/6/7: parallax + reveal on scroll incl. mobile + slight blur)
-     ============================================================ */
-  #section3.custom-bg{
-    position:relative;
-    /* background moved to ::after to allow blur */
-    background:none;
-    overflow:hidden;
-  }
-  /* Blurred background image layer (Change 7) */
-  #section3.custom-bg::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:url('https://i.imgur.com/jKesbxz.jpeg') center / cover no-repeat;
-    background-position-y: var(--s3-parallax);
-    filter:blur(2px);
-    transform:scale(1.03); /* compensate blur edge crop */
-    z-index:0;
-  }
-  /* Dark veil above image, below content (Change 6 keeps effect on mobile) */
-  #section3.custom-bg::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:#000;
-    opacity:var(--s3-veil);     /* JS adjusts this between enter/center/exit to "reveal" then "disappear" */
-    transition:opacity .06s linear;
-    pointer-events:none;
-    z-index:1;
-  }
-  .info-box{max-width:680px;background:rgba(0,0,0,.6);position:relative;z-index:2;}
-  .info-box img{filter:brightness(70%);}
-  .opacity-70{opacity:.7;}
-
-  /* No longer disable effect on mobile; keep attachment scroll for perf */
-  @media (max-width: 767.98px){
-    /* nothing to disable here now */
-  }
-
-  /* ============================================================
-     SECTION 4 (Change 8: center images in their quarters)
-     ============================================================ */
-  #section4 img{width:90px;}
-  #section4 .row > [class*="col-"]{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-  }
-
-  /* ============================================================
-     SECTION 5
-     ============================================================ */
-  .filter-btn.active{background:#000;color:#fff;}
-  .menu-item{display:none;}
-  /* Make menu imagery mobile-safe (Change 3) */
-  .menu-item .card{overflow:hidden;}
-  .menu-item img{
-    width:100%;
-    height:auto;
-    aspect-ratio:4/3;
-    object-fit:cover;
-  }
-  /* Let filter buttons wrap on small screens (Change 3) */
-  .btn-group{flex-wrap:wrap;gap:.5rem;}
-  .btn-group .btn{flex:0 0 auto;}
-
-  /* ============================================================
-     SECTION 6
-     ============================================================ */
-  /* NEW: background on the entire section via image URL (Change 2) */
-  #section6{
-    background-image: var(--s6-bg);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position:relative; /* to host darkening overlay */
-  }
-  /* === NEW: Slightly darker overall backdrop for Section 6 === */
-  #section6::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:rgba(0,0,0,.12);
-    pointer-events:none;
-    z-index:0;
-  }
-  /* Left media panel: use ::before for darkened + blurred bg (Change 4) */
-  .media-split .left-media{
-    position:relative;
-    min-height:480px;
-    overflow:hidden;
-    z-index:1; /* above section overlay */
-  }
-  .media-split .left-media::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:url('https://arktura.com/wp-content/uploads/2015/06/Arktura-SoundStar-Los-Angeles-CA_WEB_1-scaled.jpg') center/cover no-repeat;
-    /* === NEW: slightly more dark than before === */
-    filter:brightness(.6) blur(2px); /* darken + blur */
-    transform:scale(1.04);
-    z-index:0;
-  }
-  .media-split .left-media > *{position:relative;z-index:1;}
-  .play-btn{width:80px;height:80px;font-size:1.75rem;}
-  .stack{min-height:240px;}
-  .stack-img{background-size:cover;background-position:center;}
-  .stack-text h4{margin:0;}
-
-  /* === NEW: More striking title + play button in Section 6 === */
-  .media-split .left-media h3{
-    color:#fff;
-    font-weight:800;
-    letter-spacing:.02em;
-    text-transform:uppercase;
-    text-shadow:0 2px 12px rgba(0,0,0,.6), 0 0 22px rgba(255,255,255,.25);
-    filter:drop-shadow(0 0 6px rgba(0,0,0,.35));
-  }
-  @media (min-width: 768px){
-    .media-split .left-media h3{font-size:2rem;}
-  }
-  .play-btn{
-    width:96px;                /* bigger, more prominent */
-    height:96px;
-    font-size:2rem;
-    border-radius:999px;
-    background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(245,245,245,.98));
-    color:#111 !important;
-    border:1px solid rgba(255,255,255,.9);
-    box-shadow:0 12px 28px rgba(0,0,0,.35), 0 0 0 0 rgba(255,255,255,.35);
-    animation:playPulse 2.4s infinite ease-in-out;
-    transition:transform .25s ease, box-shadow .25s ease, background-color .25s ease;
-  }
-  .play-btn:hover{
-    transform:translateY(-2px) scale(1.06);
-    box-shadow:0 16px 34px rgba(0,0,0,.4), 0 0 0 10px rgba(255,255,255,.2);
-  }
-  @keyframes playPulse{
-    0%{box-shadow:0 12px 28px rgba(0,0,0,.35), 0 0 0 0 rgba(255,255,255,.28);}
-    70%{box-shadow:0 12px 28px rgba(0,0,0,.35), 0 0 0 18px rgba(255,255,255,0);}
-    100%{box-shadow:0 12px 28px rgba(0,0,0,.35), 0 0 0 0 rgba(255,255,255,0);}
-  }
-
-  /* ============================================================
-     SECTION 7 (provider icons)
-     ============================================================ */
-  .provider-icons img{height:28px;width:auto;transition:transform .2s ease,opacity .2s ease;}
-  .provider-icons a:hover img{transform:scale(1.05);opacity:1;}
-
-  /* ============================================================
-     SECTION 8 (Change 5: smaller centered quotes with inline arrows)
-     ============================================================ */
-  #testiCarousel .carousel-item{min-height:200px;}
-  #testiCarousel blockquote{max-width:720px;margin:auto;}
-  /* NEW: ensure 5-star image is centered (Change 1) */
-  .stars-centered{display:block;margin-left:auto;margin-right:auto;}
-  /* Smaller quotes */
-  #testiCarousel .blockquote p{font-size:1rem;} /* smaller than fs-4 */
-
-  /* UPDATED: Place arrows on the same line as quotes using FLEX
-     (replaces earlier grid approach for broader compatibility) */
-  #testiCarousel{
-    display:flex;
-    align-items:center;
-    gap:1rem;
-  }
-  #testiCarousel .carousel-inner{
-    order:2;
-    flex:1 1 auto;
-  }
-  #testiCarousel .carousel-control-prev.custom-arrow,
-  #testiCarousel .carousel-control-next.custom-arrow{
-    position:static;
-    width:36px;height:36px;
-  }
-  #testiCarousel .carousel-control-prev.custom-arrow{order:1;}
-  #testiCarousel .carousel-control-next.custom-arrow{order:3;}
-
-  /* ============================================================
-     SECTION 9
-     ============================================================ */
-  .footer-logo{max-width:120px;}
-  footer a{text-decoration:none;}
-  footer a:hover{text-decoration:underline;}
-
-  /* ============================================================
-     CUSTOM OVERRIDES FOR REQUESTED CHANGES
-     ============================================================ */
-
-  /* Social positioning overrides */
-  .social-icons{top:20px !important;left:20px !important;flex-direction:row !important;}
-
-  /* ===== Custom "crepe" triangle arrows (Change 5) =====
-     Replace previous circular/shaft arrows with a cut-triangle crepe
-     and light drizzle pattern acting as the pointer.
-  */
-  .custom-arrow{
-    position:absolute;width:56px;height:56px;top:50%;transform:translateY(-50%);
-    background:transparent!important;border:none;opacity:1;
-    z-index:10; /* above overlay */
-    padding:0;
-    color:#fff; /* pointer color */
-    /* === NEW: make arrow key itself lighter and add hover animation === */
-    background-color:rgba(255,255,255,.12) !important;
-    border:1px solid rgba(255,255,255,.35);
-    border-radius:999px;
-    backdrop-filter:blur(4px) saturate(120%);
-    box-shadow:0 6px 18px rgba(0,0,0,.25), inset 0 0 0 0 rgba(255,255,255,.35);
-    transition:transform .25s ease, box-shadow .25s ease, background-color .25s ease;
-  }
-  .custom-arrow.small-arrow{width:44px;height:44px;}
-  .custom-arrow:hover{
-    background-color:rgba(255,255,255,.28) !important;
-    transform:translateY(-50%) translateY(-2px) scale(1.06);
-    box-shadow:0 12px 26px rgba(0,0,0,.3), inset 0 0 0 6px rgba(255,255,255,.18);
-  }
-  .custom-arrow .carousel-control-prev-icon,
-  .custom-arrow .carousel-control-next-icon{display:none !important;}
-
-  .custom-arrow .arrow-graphic{
-    position:relative;
-    display:block;
-    width:100%; height:100%;
-  }
-
-  /* The crepe triangle (right-pointing by default) */
-  .custom-arrow .arrow-graphic::before{
-    content:"";
-    position:absolute;
-    left:50%; top:50%;
-    width:44px; height:32px;
-    transform:translate(-40%,-50%); /* bias towards edge */
-    /* triangle via clip-path */
-    background:
-      /* drizzle lines */
-      repeating-linear-gradient(135deg, rgba(255,255,255,.85) 0 2px, rgba(255,255,255,0) 2px 8px),
-      /* base crepe tone (use currentColor to keep contrast on dark bg) */
-      linear-gradient(0deg, currentColor, currentColor);
-    clip-path:polygon(0% 50%, 100% 0%, 100% 100%);
-    filter:drop-shadow(0 0 6px rgba(0,0,0,.6));
-    border-top-left-radius:4px; /* subtle cut */
-    border-bottom-left-radius:6px;
-  }
-  .custom-arrow.small-arrow .arrow-graphic::before{width:36px;height:26px;}
-
-  /* Directional orientation */
-  .carousel-control-prev.custom-arrow .arrow-graphic::before{
-    transform:translate(-60%,-50%) rotate(180deg);
-  }
-  .carousel-control-next.custom-arrow .arrow-graphic::before{
-    transform:translate(-40%,-50%) rotate(0deg);
-  }
-
-  /* edge spacing */
-  #heroCarousel .carousel-control-prev.custom-arrow{left:1rem;}
-  #heroCarousel .carousel-control-next.custom-arrow{right:1rem;}
-
-  /* Section 1 caption animation */
-  @keyframes fadeSlideDown{0%{opacity:0;transform:translate(-50%, calc(-50% - 30px));}100%{opacity:1;transform:translate(-50%, -50%);} }
-
-  /* Section 2 logo centering */
-  .section2-logo{display:block;margin-left:auto;margin-right:auto;}
-
-  /* Section 5 menu items smaller (kept but height now controlled by aspect-ratio) */
-  .menu-item .card-title{font-size:1rem;}
-  .menu-item .card-text{font-size:.9rem;}
-
-  /* Section 6 play button centering */
-  .play-btn{margin-left:auto;margin-right:auto;}
-
-  /* Section 8 arrow positions (overridden by flex for inline layout) */
-  #testiCarousel .carousel-control-prev.custom-arrow{left:auto;}
-  #testiCarousel .carousel-control-next.custom-arrow{right:auto;}
-
-  /* Footer spacing */
-  footer{padding-bottom:3rem;}
-
-  /* ============================================================
-     === NEW RULES (Adjusted) ===================================
-     ============================================================ */
-
-  /* Arrows remain only within Section 1 (not fixed to viewport) */
-  #hero .carousel-control-prev.custom-arrow,
-  #hero .carousel-control-next.custom-arrow{
-    position:absolute;
-  }
-
-  /* Global hover animations (buttons, cards, nav, icons, stacks) */
-  .btn,.nav-link,.filter-btn,.card,.custom-arrow,.stack,.social-icons a{transition:all .3s ease;}
-  .btn:hover,.filter-btn:hover,.nav-link:hover{transform:translateY(-2px) scale(1.05);}
-  .card:hover{transform:scale(1.03);box-shadow:0 8px 16px rgba(0,0,0,.15);}
-  .custom-arrow:hover .arrow-graphic::before{transform:translate(-40%,-50%) scale(1.06);} /* subtle hover grow (next) */
-  .carousel-control-prev.custom-arrow:hover .arrow-graphic::before{transform:translate(-60%,-50%) rotate(180deg) scale(1.06);} /* subtle hover grow (prev) */
-  .stack:hover .stack-img,.stack:hover .stack-text{transform:scale(1.02);}
-  .social-icons a:hover{transform:scale(1.2);}
-  .menu-item img:hover{filter:brightness(80%);}
-
-  /* Section-6 stacked tiles flush edges regardless of images */
-  .stack{flex-wrap:nowrap;margin:0;}
-  .stack-img,.stack-text{flex:0 0 50%;max-width:50%;min-height:100%;}
-  .stack-img{background-size:cover;background-position:center;}
-
-  /* ============================================================
-     RESPONSIVE TWEAKS (Change 3: ensure mobile friendliness)
-     ============================================================ */
-  @media (max-width: 992px){
-    #hero{height:90vh;}
-  }
-  @media (max-width: 768px){
-    .hero-logo{width:100px;}
-    .custom-arrow{width:48px;height:48px;}
-    .custom-arrow.small-arrow{width:38px;height:38px;}
-    .info-box{padding:1.5rem !important;}
-  }
-  @media (max-width: 576px){
-    #hero{height:85vh;}
-    .follow-label{display:none;} /* save space on very small screens */
-    .hero-nav .nav-list{gap:.5rem;}
-    .hero-nav .nav-list a{padding:.3rem .7rem;}
-  }
-  @media (prefers-reduced-motion: reduce){
-    html:focus-within{scroll-behavior:auto;}
-    .btn,.nav-link,.filter-btn,.card,.custom-arrow,.stack,.social-icons a{transition:none!important;}
-  }
-
-  /* ===== NEW: Global fixed top-right navbar toggler (Change 3) ===== */
-  .global-navbar-toggler{
-    position:fixed;
-    top:8px;
-    right:8px;
-    z-index:2001;              /* above full-screen menu */
-  }
-  /* Ensure only visible on mobile, like original intent */
-  @media (min-width: 768px){
-    .global-navbar-toggler{display:none;}
-  }
-
-  /* ======= NEW: Image-based crepe arrows for Sections 1 & 8 (requested) ======= */
-  /* Hide the old triangle graphic; show image icon instead */
-  .custom-arrow .arrow-graphic{display:none !important;}
-  .custom-arrow .carousel-control-prev-icon,
-  .custom-arrow .carousel-control-next-icon{
-    display:block !important;
-    background-position:center;
-    background-repeat:no-repeat;
-    background-size:contain;
-    background-image:url('https://i.imgur.com/520xzls.png') !important;
-    /* brighter, easier to see */
-    filter:drop-shadow(0 0 10px rgba(255,255,255,.6)) drop-shadow(0 0 6px rgba(0,0,0,.6));
-  }
-  /* Directional rotation: left = -90°, right = +90° */
-  .carousel-control-prev.custom-arrow .carousel-control-prev-icon{transform:rotate(90deg);}
-  .carousel-control-next.custom-arrow .carousel-control-next-icon{transform:rotate(-90deg);}
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OSS - Open Submission Series</title>
+  <meta name="color-scheme" content="dark light" />
+  <link rel="stylesheet" href="assets/style.css" />
 </head>
-<body data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="70">
+<body>
+  <!-- ===== Top Navigation (Section 1) ===== -->
+  <header class="topbar" role="banner">
+    <div class="container nav" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="Home">
+        <img alt="Logo"
+             src='https://i.imgur.com/XpO73I9.png' />
+        <span>OSS</span>
+      </a>
 
-<!-- ===== GLOBAL MOBILE TOGGLER (Change 3: top-right of entire page) ===== -->
-<button class="navbar-toggler global-navbar-toggler navbar-dark d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
-  <span class="navbar-toggler-icon"></span>
-</button>
+      <nav>
+        <button class="burger" id="navToggle" aria-expanded="false" aria-controls="navMenu" aria-label="Toggle navigation">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+          </svg>
+        </button>
 
-<!-- ===== SECTION 1 · HERO ===== -->
-<header id="hero">
-  <div class="social-icons d-flex flex-row gap-3 position-absolute top-0 start-0 p-3">
-    <span class="follow-label">
-      Follow us!
-      <span class="thin-arrow" aria-hidden="true"></span>
-    </span>
-    <a href="#" class="text-white"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i><span class="visually-hidden">Facebook</span></a>
-    <a href="#" class="text-white"><i class="fab fa-instagram fa-lg" aria-hidden="true"></i><span class="visually-hidden">Instagram</span></a>
-    <a href="#" class="text-white"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
-  </div>
+        <div id="navMenu" class="nav-links" role="menubar">
+          <a class="nav-link" role="menuitem" href="#hero">Home</a>
+          <a class="nav-link" role="menuitem" href="#grand-opening">Grand Opening</a>
+          <a class="nav-link" role="menuitem" href="#events-head">Events</a>
 
-  <a href="#hero">
-    <!-- Change 4: tighten transparent top padding using logo-crop trims -->
-    <img src="https://i.imgur.com/P6DecMX.png" class="hero-logo sukar-logo logo-crop" style="--trim-t:22px;" alt="Site Logo" decoding="async" fetchpriority="high">
-  </a>
-
-  <!-- UPDATED: Collapsible navbar (desktop visible, mobile uses global fixed toggler) -->
-  <nav id="mainNav" class="hero-nav navbar navbar-expand-md navbar-dark">
-    <!-- Removed the old in-nav mobile toggler; now using global fixed toggler (Change 3) -->
-
-    <div class="container justify-content-center position-relative">
-      <!-- Collapsible menu (mobile) + centered inline menu (desktop) -->
-      <div class="collapse navbar-collapse justify-content-center" id="navMenu">
-        <ul class="nav-list navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="#section1">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="order.html">Order</a></li>
-          <li class="nav-item"><a class="nav-link" href="location.html">Location</a></li>
-          <li class="nav-item"><a class="nav-link" href="#footer">Contact</a></li>
-          <li class="nav-item"><a class="nav-link" href="#section8">Reviews</a></li>
-          <li class="nav-item"><a class="nav-link" href="career.html">Career</a></li>
-          <li class="nav-item"><a class="nav-link" href="franchise.html">Franchise</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6000">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="https://lh4.googleusercontent.com/proxy/dvL0lXJxlkRkPWwZarUNSIwWRuTZfuSwVh7ASYVMaDM8KVhsyqih7dHztJHhprIvF_xg2oZS7bq2NM1ZB4tOb8KwQwiAyxrYM77cbD-oXgRRd64wHPCo02ek83WlyNbSmnvEstTvr6j9ptU" class="d-block w-100 hero-slide-img" alt="Slide 1" decoding="async" fetchpriority="high">
-        <div class="carousel-caption text-center">
-          <h1 class="display-4 fw-bold text-shadow">Fruit and Ice Cream Crepe</h1>
-          <h4 class="lead mb-3 text-shadow">Delicious hard scooped ice cream, any fruit of your choice all topped on a warmed crepe</h4>
-          <a href="#section5" class="btn btn-light hero-cta rounded-pill px-4">View Menu</a>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <img src="https://recipes.net/wp-content/uploads/2022/09/choco-banana-crepe.jpg" class="d-block w-100 hero-slide-img" alt="Slide 2" loading="lazy" decoding="async">
-        <div class="carousel-caption text-center">
-          <h1 class="display-4 fw-bold text-shadow">Banana and Nutella crepe</h1>
-          <h4 class="lead mb-3 text-shadow">Nutella filling with banana slices wrapped in a crispy and soft crepe</h4>
-          <a href="#section5" class="btn btn-light hero-cta rounded-pill px-4">View Menu</a>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <img src="https://insanelygoodrecipes.com/wp-content/uploads/2023/04/Sweet-Homemade-Crepes-with-Bananas-Berries-and-Chocolate.jpg" class="d-block w-100 hero-slide-img" alt="Slide 3" loading="lazy" decoding="async">
-        <div class="carousel-caption text-center">
-          <h1 class="display-4 fw-bold text-shadow">Green and Berry Crepe</h1>
-          <h4 class="lead mb-3 text-shadow">All the lightest elements of some of the most refreshing ingredients, packed into one</h4>
-          <a href="#section5" class="btn btn-light hero-cta rounded-pill px-4">View Menu</a>
-        </div>
-      </div>
-    </div>
-
-    <button class="carousel-control-prev custom-arrow" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-      <span class="arrow-graphic" aria-hidden="true"></span>
-    </button>
-    <button class="carousel-control-next custom-arrow" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
-      <span class="arrow-graphic" aria-hidden="true"></span>
-    </button>
-  </div>
-</header>
-
-<!-- ===== SECTION 2 ===== -->
-<section id="section2" class="pistachio text-center section2-thin">
-  <img src="https://i.imgur.com/P6DecMX.png" class="section2-logo sukar-logo logo-crop mb-2 d-block mx-auto" style="--trim-t:22px;" alt="" loading="lazy" decoding="async">
-  <p class="lead mb-0">Sukar's logo and tag line can go here</p>
-</section>
-
-<!-- ===== SECTION 3 ===== -->
-<section id="section3" class="custom-bg py-5">
-  <div class="info-box mx-auto text-center text-white p-5 rounded-4">
-    <img src="assets/section3.jpg" class="img-fluid rounded-4 mb-4 opacity-90" alt="" loading="lazy" decoding="async">
-    <h2>Main Title</h2>
-    <h5 class="mb-3">subtitle for context</h5>
-    <p class="small mb-4">Brief description tbh this can be anything, maybe employment contact xyz, maybe explaining the reason for the name/origin of the company and inspiration? Learn more button can take you to an article or blog or something that sam can write?</p>
-    <div class="d-flex gap-3 justify-content-center">
-      <a href="#" class="btn btn-outline-light rounded-pill px-4">Learn More</a>
-      <a href="#" class="btn btn-light rounded-pill px-4">Order Here</a>
-    </div>
-  </div>
-</section>
-
-<!-- ===== SECTION 4 ===== -->
-<section id="section4" class="pistachio py-5">
-  <div class="container">
-    <div class="row g-4 text-center">
-      <div class="col-6 col-md-3"><img src="https://i.imgur.com/0wIDKMB.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"></div>
-      <div class="col-6 col-md-3"><img src="https://i.imgur.com/x4RIizz.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"></div>
-      <div class="col-6 col-md-3"><img src="https://i.imgur.com/R0F3Dx5.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"></div>
-      <div class="col-6 col-md-3"><img src="https://i.imgur.com/SaDJb3I.png" class="img-fluid mb-2" alt="" loading="lazy" decoding="async"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== SECTION 5 ===== -->
-<section id="section5" class="offwhite py-5">
-  <div class="container text-center">
-    <h2 class="mb-1">Our Menu</h2>
-    <h6 class="text-muted mb-4">Fresh & delicious selections</h6>
-
-    <div class="btn-group mb-5">
-      <button class="btn btn-outline-dark filter-btn active" data-filter="all">Featured</button>
-      <button class="btn btn-outline-dark filter-btn" data-filter="appetizer">Crepes</button>
-      <button class="btn btn-outline-dark filter-btn" data-filter="mains">Chocolate?</button>
-      <button class="btn btn-outline-dark filter-btn" data-filter="dessert">Lotus Energy</button>
-      <button class="btn btn-outline-dark filter-btn" data-filter="drinks">Coffee</button>
-    </div>
-
-    <div class="row g-4" id="menuContainer">
-      <div class="col-12 col-md-6"><div class="menu-item appetizer card h-100"><img src="https://thekellykathleen.com/wp-content/uploads/2021/02/Chocolate-Tahini-White-Choco-Covered-Banana-Bites-300x300.jpg" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">White chocolate banana crepe nuggets</h5><p class="card-text small">A thin and crispy crepe wrapped around bananas cut into nugget size bites dipped in white chocolate.</p></div></div></div>
-      <div class="col-12 col-md-6"><div class="menu-item mains card h-100"><img src="https://www.shutterstock.com/image-photo/chocolate-fountain-fruits-white-on-260nw-1119929936.jpg" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">White chocolate dip</h5><p class="card-text small">Dip any of our classic menu items with any flavor chocalate requiested.</p></div></div></div>
-      <div class="col-12 col-md-6"><div class="menu-item dessert card h-100"><img src="https://res.cloudinary.com/hz3gmuqw6/image/upload/c_fill,q_auto,w_750,f_auto/f_auto/7-Brew-Secret-Menu-20-phpF8sf6S" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">Beachy Peachy</h5><p class="card-text small">fruit punch falvored energy drink.</p></div></div></div>
-      <div class="col-12 col-md-6"><div class="menu-item drinks card h-100"><img src="https://lifemadesweeter.com/wp-content/uploads/Easy-Cold-Brew-Coffee-Recipe-Vegan-Dairy-Free-Paleo-Healthy.jpg" class="card-img-top" alt="" loading="lazy" decoding="async"><div class="card-body"><h5 class="card-title">Cold Brew Coffee</h5><p class="card-text small">Smooth 18-hour cold brew served over ice.</p></div></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== SECTION 6 ===== -->
-<section id="section6" class="media-split">
-  <div class="container-fluid g-0">
-    <div class="row g-0">
-      <div class="col-lg-6 left-media position-relative d-flex flex-column justify-content-center text-center">
-        <!-- Make the entire background a clickable link (opens modal) -->
-        <a class="stretched-link" role="button" data-bs-toggle="modal" data-bs-target="#videoModal" aria-label="Play video"></a>
-        <h3 class="text-white mb-4">Watch a tour!</h3>
-        <button class="btn btn-lg btn-light rounded-circle shadow play-btn mx-auto" data-bs-toggle="modal" data-bs-target="#videoModal"><i class="fas fa-play" aria-hidden="true"></i><span class="visually-hidden">Play video</span></button>
-      </div>
-      <div class="col-lg-6 d-flex flex-column">
-        <div class="stack flex-grow-1 d-flex">
-          <div class="stack-img flex-fill" style="background-image:url('https://forkfulofplants.com/wp-content/uploads/2022/02/Coconut-Milk-Crepes-featured.jpg')"></div>
-          <div class="stack-text d-flex flex-column justify-content-center align-items-center pistachio text-center p-4">
-            <h4>Fruit Delectables</h4><a href="#" class="btn btn-outline-dark rounded-pill mt-3">Explore</a>
+          <!-- DROPDOWN: Schedule -->
+          <div class="dropdown" data-dropdown aria-expanded="false">
+            <button class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="menu-schedule">
+              Schedule <span class="caret" aria-hidden="true"></span>
+            </button>
+            <div id="menu-schedule" class="dropdown-menu" role="menu" aria-label="Schedule submenu">
+              <a role="menuitem" href="policies.html">Policies</a>
+              <a role="menuitem" href="informations.html">Informations</a>
+              <a role="menuitem" href="rules.html">Rules</a>
+              <a role="menuitem" href="divisions.html">Divisions</a>
+            </div>
           </div>
+
+          <a class="nav-link" role="menuitem" href="#footer">Contact</a>
         </div>
-        <div class="stack flex-grow-1 d-flex">
-          <div class="stack-text d-flex flex-column justify-content-center align-items-center pistachio text-center p-4">
-            <h4>Enough Chocolate</h4><a href="#" class="btn btn-outline-dark rounded-pill mt-3">Discover</a>
-          </div>
-          <div class="stack-img flex-fill" style="background-image:url('https://www.charlotteobserver.com/public/latest-news/1xed2p/picture308560925/alternates/LANDSCAPE_1140/melt%20n%20dip')"></div>
-        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== Hero (Section 2) ===== -->
+  <section id="hero" class="hero">
+    <div class="hero-inner container reveal" data-animate="fade">
+      <div class="eyebrow">Open Submission Series</div>
+      <h1>Fight for your spot.</h1>
+      <a class="btn" href="#events-head" role="button">Upcoming Tournaments</a>
+    </div>
+  </section>
+
+  <!-- ===== Grand Opening (Special Section) ===== -->
+  <section id="grand-opening" class="grand-opening" aria-labelledby="grand-opening-title">
+    <div class="go-bg" aria-hidden="true"></div>
+    <div class="go-rings" aria-hidden="true"></div>
+    <div class="confetti" id="confetti" aria-hidden="true"></div>
+    <div class="container go-inner">
+      <span class="go-eyebrow">Grand Opening</span>
+      <h2 class="go-title" id="grand-opening-title">Launch Tournament</h2>
+      <p class="go-sub">November 20, 2025 · 2:00 AM · Meet me outside the blue store</p>
+      <div class="go-countdown" id="go-countdown" aria-live="polite" data-datetime="2025-11-20T01:00:00-04:00">
+        <div class="cd-seg"><span class="num" id="cd-days">00</span><span class="lab">Days</span></div>
+        <div class="cd-seg"><span class="num" id="cd-hours">00</span><span class="lab">Hours</span></div>
+        <div class="cd-seg"><span class="num" id="cd-mins">00</span><span class="lab">Minutes</span></div>
+        <div class="cd-seg"><span class="num" id="cd-secs">00</span><span class="lab">Seconds</span></div>
+      </div>
+      <div class="go-cta">
+        <a class="btn go-btn" href="#events-tables" role="button">RSVP Now</a>
+        <a class="btn go-btn outline" href="#events-head" role="button">See Full Schedule</a>
+      </div>
+      <button class="sr-only" id="confettiButton" aria-label="Trigger celebration">Celebrate</button>
+    </div>
+  </section>
+
+  <!-- ===== Section Intro (Section 3) ===== -->
+  <section id="events-head">
+    <div class="container section-head reveal" data-animate="fade-up">
+      <div class="subtitle">– Events –</div>
+      <h2 class="title">Near you</h2>
+      <p class="lead">Open sign ups, tournaments.</p>
+    </div>
+  </section>
+
+  <!-- ===== Event Tables (Section 4) ===== -->
+  <section id="events-tables">
+    <div class="container tables">
+      <!-- Upcoming -->
+      <article class="card reveal" data-animate="fade-up">
+        <header>
+          <h3>Upcoming Events</h3>
+          <span class="hint">Auto-sorted by date</span>
+        </header>
+        <table aria-describedby="upcoming-caption">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Event</th>
+              <th scope="col">Location</th>
+              <th scope="col">Details</th>
+            </tr>
+          </thead>
+          <tbody id="upcoming-body">
+            <tr>
+              <td colspan="4" class="empty">Loading upcoming events…</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+
+      <!-- Previous -->
+      <article class="card reveal" data-animate="fade-up">
+        <header>
+          <h3>Previous Events</h3>
+          <span class="hint">Most recent first</span>
+        </header>
+        <table aria-describedby="previous-caption">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Event</th>
+              <th scope="col">Location</th>
+              <th scope="col">Recap</th>
+            </tr>
+          </thead>
+        <tbody id="previous-body">
+            <tr>
+              <td colspan="4" class="empty">Loading previous events…</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== Footer (Section 5) ===== -->
+  <footer id="footer">
+    <div class="container footer-grid reveal" data-animate="fade-up">
+      <div class="footer-col">
+        <h4>About</h4>
+        <p class="lead">OSS is ___.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Links</h4>
+        <a href="#hero">Home</a>
+        <a href="#events-head">Events</a>
+        <a href="#events-tables">Schedule</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="mailto:info@example.com" class="link">info@example.com</a>
+        <span class="space-s"></span>
+        <span class="pill">Mon–Sun · 9–5</span>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- Modal -->
-<div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content bg-transparent border-0">
-      <div class="ratio ratio-16x9">
-        <iframe id="videoFrame" src="" title="YouTube video" allowfullscreen loading="lazy"></iframe>
-      </div>
+    <div class="container copyright">
+      © <span id="year"></span> OSS. All rights reserved.
     </div>
-  </div>
-</div>
+  </footer>
 
-<!-- ===== SECTION 7 ===== -->
-<section id="section7" class="offwhite py-5 text-center">
-  <a href="your-target-page.html" class="h2 d-block mb-2 text-decoration-none text-dark">Order Now</a>
-  <p class="lead">You can place an order via any food ordering app or visit our location.</p>
-  <div class="d-flex justify-content-center align-items-center gap-4 my-3 provider-icons">
-    <a href="#" aria-label="Order on DoorDash" rel="noopener">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/DoorDash_Logo.svg" alt="DoorDash">
-    </a>
-    <a href="#" aria-label="Order on Uber Eats" rel="noopener">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b3/Uber_Eats_2020_logo.svg" alt="Uber Eats">
-    </a>
-    <a href="#" aria-label="Order on Grubhub" rel="noopener">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/GrubHub_Logo_2016.svg" alt="Grubhub">
-    </a>
-  </div>
-  <a href="#section5" class="btn btn-dark rounded-pill px-4 mt-2">View Menu</a>
-</section>
 
-<!-- ===== SECTION 8 ===== -->
-<section id="section8" class="dark-bg py-5">
-  <div class="container position-relative">
-    <h2 class="text-center text-white mb-3">What Our Customers Say</h2>
-    <!-- Centered 5-star graphic under title -->
-    <div class="text-center mb-4">
-      <img src="https://static.vecteezy.com/system/resources/thumbnails/013/743/771/small_2x/five-stars-rating-icon-png.png" alt="5 Stars" style="width:110px;" class="stars-centered" loading="lazy" decoding="async">
-    </div>
-    <div id="testiCarousel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner text-center">
-        <div class="carousel-item active"><blockquote class="blockquote text-white"><p>“Absolutely the best dining experience I've had in years!”</p></blockquote></div>
-        <div class="carousel-item"><blockquote class="blockquote text-white"><p>“Service was impeccable and the food was divine.”</p></blockquote></div>
-        <div class="carousel-item"><blockquote class="blockquote text-white"><p>“I'll be recommending this place to all my friends!”</p></blockquote></div>
-      </div>
-
-      <button class="carousel-control-prev custom-arrow small-arrow" type="button" data-bs-target="#testiCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-        <span class="arrow-graphic" aria-hidden="true"></span>
-      </button>
-      <button class="carousel-control-next custom-arrow small-arrow" type="button" data-bs-target="#testiCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
-        <span class="arrow-graphic" aria-hidden="true"></span>
-      </button>
-    </div>
-  </div>
-</section>
-
-<!-- ===== SECTION 9 ===== -->
-<footer id="footer" class="dark-bg text-white pt-5 pb-5">
-  <div class="container">
-    <!-- Top row: logo + copyright and Visit Us (centered per Change 5) -->
-    <div class="row align-items-center justify-content-center text-center gy-3">
-      <div class="col-12 d-flex flex-column flex-md-row align-items-center justify-content-center gap-3">
-        <img src="https://i.imgur.com/P6DecMX.png" class="footer-logo sukar-logo logo-crop" alt="" loading="lazy" decoding="async">
-        <p class="mb-0">&copy; 2025 Sukar</p>
-      </div>
-      <div class="col-12">
-        <h5 class="mb-1">Visit Us</h5>
-        <p class="mb-0">229 Del Prado Blvd N #6th<br>Cape Coral, FL 33909</p>
-      </div>
-    </div>
-
-    <!-- Connect section below the top row (centered on all sizes; Change 5) -->
-    <div class="row gy-4 mt-4">
-      <div class="col-12 text-center">
-        <h5>Connect</h5>
-        <div class="d-flex justify-content-center gap-3">
-          <a href="#" class="text-white"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i><span class="visually-hidden">Facebook</span></a>
-          <a href="#" class="text-white"><i class="fab fa-instagram fa-lg" aria-hidden="true"></i><span class="visually-hidden">Instagram</span></a>
-          <a href="#" class="text-white"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
-        </div>
-      </div>
-    </div>
-
-    <hr class="border-light border-opacity-25 my-4">
-    <div class="d-flex flex-column flex-md-row justify-content-center gap-3 small text-center">
-      <a href="#" class="text-white-50">Privacy Policy</a>
-      <a href="#" class="text-white-50">Terms of Service</a>
-      <a href="#" class="text-white-50">Careers</a>
-      <a href="#" class="text-white-50">Support</a>
-    </div>
-  </div>
-</footer>
-
-<!-- Bootstrap bundle & custom JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-
-<!-- ===== FULL JS ===== -->
-<script>
-/* ============================================================
-   SECTION 1 · DYNAMIC CAPTION OFFSET
-   - Previously used to center below logo + nav.
-   - Retained in case you revert to offset-based layout, but
-   - no longer affects the caption since we now center at 50vh.
-   ============================================================ */
-(() => {
-  const updateTopSpace = () => {
-    const logo = document.querySelector('.hero-logo');
-    const nav  = document.getElementById('mainNav');
-    if(!logo || !nav) return;
-    const rectLogo = logo.getBoundingClientRect();
-    const rectNav  = nav.getBoundingClientRect();
-    const combined = rectLogo.height + rectNav.height + 24; // small breathing room
-    document.documentElement.style.setProperty('--top-space', combined + 'px');
-  };
-  window.addEventListener('load', updateTopSpace, {once:true});
-  window.addEventListener('resize', updateTopSpace);
-})();
-
-/* ============================================================
-   SECTION 3 · PARALLAX + REVEAL/DISAPPEAR ON SCROLL
-   - Now active on both desktop and mobile (Change 6).
-   - Moves the background as the user scrolls (parallax).
-   - Fades the dark veil to "reveal" near section center, then
-   - increases veil again as it exits (disappear).
-   ============================================================ */
-(() => {
-  const section = document.getElementById('section3');
-  if(!section) return;
-
-  const onScroll = () => {
-    const rect = section.getBoundingClientRect();
-    const vh   = window.innerHeight || document.documentElement.clientHeight;
-
-    /* Parallax: tie bg to page scroll softly */
-    const pageY = window.scrollY || window.pageYOffset;
-    const parallaxOffset = Math.round((pageY - section.offsetTop) * -0.2 - 250); // adjust intensity
-    document.documentElement.style.setProperty('--s3-parallax', parallaxOffset + 'px');
-
-    /* Reveal/Disappear: 0 at enter, 1 near center, back to 0 at exit */
-    const sectionMid = rect.top + rect.height/2;
-    const viewportMid = vh/2;
-    const dist = Math.abs(sectionMid - viewportMid);
-    const halfSpan = (rect.height + vh)/2;
-    const progress = Math.max(0, 1 - (dist / halfSpan)); // 0..1..0
-    const veil = 0.7 - (0.45 * progress); // more reveal at center
-    document.documentElement.style.setProperty('--s3-veil', veil.toFixed(3));
-  };
-
-  window.addEventListener('scroll', onScroll, {passive:true});
-  window.addEventListener('load', onScroll, {once:true});
-  window.addEventListener('resize', onScroll);
-})();
-
-/* ============================================================
-   SECTION 5 · MENU FILTERING  (Change 3: keep mobile safe)
-   ============================================================ */
-(() => {
-  const buttons = document.querySelectorAll('.filter-btn');
-  const items   = document.querySelectorAll('.menu-item');
-
-  const display = filter => {
-    items.forEach(item => {
-      item.style.display = (filter === 'all' || item.classList.contains(filter)) ? 'block' : 'none';
-    });
-  };
-
-  display('all');  // initial
-
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      display(btn.dataset.filter);
-    }, {passive:true});
-  });
-})();
-
-/* ============================================================
-   SECTION 6 · YOUTUBE MODAL AUTOPLAY
-   ============================================================ */
-(() => {
-  const modal  = document.getElementById('videoModal');
-  const iframe = document.getElementById('videoFrame');
-  const url    = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1'; // replace with your video ID
-
-  if (!modal || !iframe) return;
-
-  modal.addEventListener('show.bs.modal', () => { iframe.src = url; }, {once:false});
-  modal.addEventListener('hidden.bs.modal', () => { iframe.src = ''; });
-})();
-
-/* ============================================================
-   NAV · Close menu on link click + body lock (Changes 1 & 2)
-   - When user taps a nav item, collapse the mobile menu.
-   - When the menu is open, prevent background scrolling.
-   ============================================================ */
-(() => {
-  const menu   = document.getElementById('navMenu');
-  if(!menu) return;
-
-  const navLinks = menu.querySelectorAll('.nav-link');
-  const toggler  = document.querySelector('.global-navbar-toggler');
-
-  const bsCollapse = () => bootstrap.Collapse.getOrCreateInstance(menu, {toggle:false});
-
-  // Close on link click
-  navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      if (menu.classList.contains('show')) {
-        bsCollapse().hide();
-      }
-    });
-  });
-
-  // Body locking when open/closed
-  menu.addEventListener('show.bs.collapse', () => document.body.classList.add('menu-open'));
-  menu.addEventListener('hidden.bs.collapse', () => document.body.classList.remove('menu-open'));
-
-  // Also close if user taps the toggler while open (optional safety)
-  if (toggler) {
-    toggler.addEventListener('click', () => {
-      // Bootstrap handles toggle; body lock handled by events above
-    });
-  }
-})();
-</script>
+  <!-- ===== JS (Centralized + Page-Specific) ===== -->
+  <script src="assets/main.js"></script>
+  <script src="assets/index-page.js"></script>
 </body>
 </html>
